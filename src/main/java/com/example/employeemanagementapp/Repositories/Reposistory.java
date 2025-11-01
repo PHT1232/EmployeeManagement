@@ -51,7 +51,6 @@ public class Reposistory<T> {
         Field[] fields = entityType.getDeclaredFields();
 
         StringBuilder inputFields = new StringBuilder();
-        StringBuilder params = new StringBuilder();
 
         for (int i = 0; i < fields.length; i++) {
             inputFields.append(fields[i].getName() + "= ?");

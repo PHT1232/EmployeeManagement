@@ -2,8 +2,6 @@ package com.example.employeemanagementapp.Mapper;
 
 import com.example.employeemanagementapp.Builders.EmployeeBuilder;
 import com.example.employeemanagementapp.Entities.Employee;
-import com.example.employeemanagementapp.Factories.EntityFactory;
-import com.example.employeemanagementapp.Factories.EntityFactoryImpl;
 
 import java.sql.ResultSet;
 
@@ -11,8 +9,7 @@ public class EmployeeMapper implements RowMapper<Employee> {
 
     @Override
     public Employee mapRow(ResultSet resultSet) throws Exception {
-        EntityFactory entityFactoryProvider = new EntityFactoryImpl();
-        Employee employee = entityFactoryProvider.getBuilder(EmployeeBuilder.class, new EmployeeBuilder())
+        Employee employee = new EmployeeBuilder()
                 .Employee_id(resultSet.getInt("employee_id"))
                 .First_name(resultSet.getString("first_name"))
                 .Last_name(resultSet.getString("last_name"))

@@ -3,8 +3,6 @@ package com.example.employeemanagementapp;
 import com.example.employeemanagementapp.Builders.EmployeeBuilder;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Employee;
-import com.example.employeemanagementapp.Factories.EntityFactory;
-import com.example.employeemanagementapp.Factories.EntityFactoryImpl;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
 import com.example.employeemanagementapp.Repositories.EmployeeRepository;
 import com.example.employeemanagementapp.Repositories.Reposistory;
@@ -53,8 +51,7 @@ public class HelloController {
     }
 
     private Employee mapEmployee() {
-        EntityFactory entityFactoryProvider = new EntityFactoryImpl();
-        Employee employee = entityFactoryProvider.getBuilder(EmployeeBuilder.class, new EmployeeBuilder())
+        Employee employee = new EmployeeBuilder()
                 .Employee_id(Integer.parseInt(employeeid.getText()))
                 .First_name(first_name.getText())
                 .Last_name(last_name.getText())

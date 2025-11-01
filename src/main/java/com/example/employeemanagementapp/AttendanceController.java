@@ -3,8 +3,6 @@ package com.example.employeemanagementapp;
 import com.example.employeemanagementapp.Builders.AttendanceBuilder;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Attendance;
-import com.example.employeemanagementapp.Factories.EntityFactory;
-import com.example.employeemanagementapp.Factories.EntityFactoryImpl;
 import com.example.employeemanagementapp.Mapper.AttendanceMapper;
 import com.example.employeemanagementapp.Repositories.AttendanceRepository;
 import com.example.employeemanagementapp.Repositories.Reposistory;
@@ -53,8 +51,7 @@ public class AttendanceController {
     }
 
     private Attendance mapEntity() {
-        EntityFactory entityFactoryProvider = new EntityFactoryImpl();
-        Attendance entity = entityFactoryProvider.getBuilder(AttendanceBuilder.class, new AttendanceBuilder())
+        Attendance entity = new AttendanceBuilder()
                 .Attendance_id(Integer.parseInt(attendanceid.getText()))
                 .Employee_id(Integer.parseInt(employeeid.getText()))
                 .Attendance_date(Date.valueOf(attendancedate.getValue()))

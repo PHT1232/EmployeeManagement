@@ -3,8 +3,6 @@ package com.example.employeemanagementapp;
 import com.example.employeemanagementapp.Builders.ProjectBuilder;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Projects;
-import com.example.employeemanagementapp.Factories.EntityFactory;
-import com.example.employeemanagementapp.Factories.EntityFactoryImpl;
 import com.example.employeemanagementapp.Mapper.ProjectMapper;
 import com.example.employeemanagementapp.Repositories.ProjectRepository;
 import com.example.employeemanagementapp.Repositories.Reposistory;
@@ -48,8 +46,7 @@ public class ProjectController {
     }
 
     private Projects mapEntity() {
-        EntityFactory entityFactoryProvider = new EntityFactoryImpl();
-        Projects entity = entityFactoryProvider.getBuilder(ProjectBuilder.class, new ProjectBuilder())
+        Projects entity = new ProjectBuilder()
                 .Project_id(Integer.parseInt(projectid.getText()))
                 .Project_name(projectname.getText())
                 .Description(description.getText())
