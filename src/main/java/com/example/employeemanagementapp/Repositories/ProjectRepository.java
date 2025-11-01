@@ -9,23 +9,4 @@ public class ProjectRepository extends Reposistory<Projects> {
     public ProjectRepository() {
         super();
     }
-
-    public ProjectRepository Mapper(RowMapper<Projects> rowmapper) {
-        this.rowMapper = rowmapper;
-        return this;
-    }
-
-    public ProjectRepository TableName(String tableName) {
-        this.tableName = tableName;
-        return this;
-    }
-
-    public ProjectRepository DatabaseConnection(Connection connection) {
-        this.connection = connection;
-        return this;
-    }
-
-    public ProjectRepository build() {
-        return this;
-    }
 }

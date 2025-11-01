@@ -1,5 +1,6 @@
 package com.example.employeemanagementapp.Repositories;
 
+import com.example.employeemanagementapp.Entities.Projects;
 import com.example.employeemanagementapp.Mapper.RowMapper;
 
 import java.lang.reflect.Field;
@@ -82,6 +83,26 @@ public class Reposistory<T> {
         PreparedStatement statement = connection.prepareStatement(query);
 
         return statement;
+    }
+
+
+    public Reposistory<T> Mapper(RowMapper<T> rowmapper) {
+        this.rowMapper = rowmapper;
+        return this;
+    }
+
+    public Reposistory<T> TableName(String tableName) {
+        this.tableName = tableName;
+        return this;
+    }
+
+    public Reposistory<T> DatabaseConnection(Connection connection) {
+        this.connection = connection;
+        return this;
+    }
+
+    public Reposistory<T> build() {
+        return this;
     }
 
     public List<T> findAll() throws Exception {

@@ -10,22 +10,4 @@ public class DepartmentRepository extends Reposistory<Departments> {
         super();
     }
 
-    public DepartmentRepository Mapper(RowMapper<Departments> rowmapper) {
-        this.rowMapper = rowmapper;
-        return this;
-    }
-
-    public DepartmentRepository TableName(String tableName) {
-        this.tableName = tableName;
-        return this;
-    }
-
-    public DepartmentRepository DatabaseConnection(Connection connection) {
-        this.connection = connection;
-        return this;
-    }
-
-    public DepartmentRepository build() {
-        return this;
-    }
 }

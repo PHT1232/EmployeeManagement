@@ -10,22 +10,4 @@ public class EmployeeRepository extends Reposistory<Employee> {
         super();
     }
 
-    public EmployeeRepository Mapper(RowMapper<Employee> rowmapper) {
-        this.rowMapper = rowmapper;
-        return this;
-    }
-
-    public EmployeeRepository TableName(String tableName) {
-        this.tableName = tableName;
-        return this;
-    }
-
-    public EmployeeRepository DatabaseConnection(Connection connection) {
-        this.connection = connection;
-        return this;
-    }
-
-    public EmployeeRepository build() {
-        return this;
-    }
 }
