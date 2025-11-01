@@ -28,8 +28,4 @@ public class EmployeeRepository extends Reposistory<Employee> {
     public EmployeeRepository build() {
         return this;
     }
-
-    public int insert(Employee employee) throws Exception {
-        return dataBaseInsert(employee);
-    }
 }

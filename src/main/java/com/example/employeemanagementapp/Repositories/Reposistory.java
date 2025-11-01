@@ -2,22 +2,90 @@ package com.example.employeemanagementapp.Repositories;
 
 import com.example.employeemanagementapp.Mapper.RowMapper;
 
-import java.sql.*;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Reposistory<T> {
-    private final Connection connection;
-    private final RowMapper<T> rowMapper;
-    private final String tableName;
+    protected Connection connection;
+    protected RowMapper<T> rowMapper;
+    protected String tableName;
 
-    public Reposistory(Connection connection, RowMapper<T> rowMapper, String tableName) {
-        this.connection = connection;
-        this.rowMapper = rowMapper;
-        this.tableName = tableName;
+    public Reposistory() {
     }
 
-    protected List<T> findAll() throws SQLException {
+    private PreparedStatement preparedInsertStatement(T entity) throws Exception {
+        Class<?> entityType = entity.getClass();
+        Field[] fields = entityType.getDeclaredFields();
+
+        StringBuilder inputFields = new StringBuilder();
+        StringBuilder params = new StringBuilder();
+
+        for (int i = 0; i < fields.length; i++) {
+            inputFields.append(fields[i].getName());
+            params.append("?");
+            if (i < fields.length -1) {
+               inputFields.append(", ");
+               params.append(", ");
+            }
+        }
+
+        String query = "INSERT INTO " + tableName + " (" + inputFields + ") VALUES(" + params + ")";
+
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].setAccessible(true);
+            statement.setObject(i + 1, fields[i].get(entity));
+        }
+
+        return statement;
+    }
+
+    private PreparedStatement preparedUpdateStatement(T entity) throws Exception {
+        Class<?> entityType = entity.getClass();
+        Field[] fields = entityType.getDeclaredFields();
+
+        StringBuilder inputFields = new StringBuilder();
+        StringBuilder params = new StringBuilder();
+
+        for (int i = 0; i < fields.length; i++) {
+            inputFields.append(fields[i].getName() + "= ?");
+            if (i < fields.length -1) {
+                inputFields.append(", ");
+            }
+        }
+
+        fields[0].setAccessible(true);
+
+        String query = "UPDATE " + tableName + " set " + inputFields + " WHERE " + fields[0].getName() + " = " + fields[0].get(entity);
+
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].setAccessible(true);
+            statement.setObject(i + 1, fields[i].get(entity));
+        }
+
+        return statement;
+    }
+
+    private PreparedStatement preparedDeleteStatement(T entity) throws Exception {
+        Class<?> entityType = entity.getClass();
+        Field fields = entityType.getDeclaredFields()[0];
+
+        fields.setAccessible(true);
+        String query = "DELETE FROM " + tableName + " WHERE " + fields.getName() + " = " + fields.get(entity);
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        return statement;
+    }
+
+    public List<T> findAll() throws Exception {
         List<T> list = new ArrayList<>();
         String sql = "SELECT * FROM " + tableName;
 
@@ -30,12 +98,21 @@ public class Reposistory<T> {
         return list;
     }
 
-    protected int insert(String sql, Object... params) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            for (int i = 0; i < params.length; i++) {
-                statement.setObject(i + 1, params[i]);
-            }
+    public int update(T entity) throws Exception {
+        try (PreparedStatement statement = preparedUpdateStatement(entity)) {
             return statement.executeUpdate();
         }
+    }
+
+    public int delete(T entity) throws Exception {
+        try (PreparedStatement statement = preparedDeleteStatement(entity)) {
+            return statement.executeUpdate();
+        }
+    }
+
+    public int insert(T entity) throws Exception {
+       try (PreparedStatement statement = preparedInsertStatement(entity)) {
+           return statement.executeUpdate();
+       }
     }
 }

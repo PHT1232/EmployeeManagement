@@ -1,12 +1,12 @@
 package com.example.employeemanagementapp;
 
-import com.example.employeemanagementapp.Builders.EmployeeBuilder;
+import com.example.employeemanagementapp.Builders.AttendanceBuilder;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
-import com.example.employeemanagementapp.Entities.Employee;
+import com.example.employeemanagementapp.Entities.Attendance;
 import com.example.employeemanagementapp.Factories.EntityFactory;
 import com.example.employeemanagementapp.Factories.EntityFactoryImpl;
-import com.example.employeemanagementapp.Mapper.EmployeeMapper;
-import com.example.employeemanagementapp.Repositories.EmployeeRepository;
+import com.example.employeemanagementapp.Mapper.AttendanceMapper;
+import com.example.employeemanagementapp.Repositories.AttendanceRepository;
 import com.example.employeemanagementapp.Repositories.Reposistory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,59 +21,56 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.Date;
 
-public class HelloController {
+public class AttendanceController {
+    @FXML
+    private TextField attendanceid;
+
     @FXML
     private TextField employeeid;
-    @FXML
-    private TextField first_name;
-    @FXML
-    private TextField last_name;
-    @FXML
-    private TextField email;
-    @FXML
-    private TextField phone;
-    @FXML
-    private TextField position;
-    @FXML
-    private TextField salary;
-    @FXML
-    private DatePicker hire_date;
-    @FXML
-    private TextField department_id;
-    @FXML
-    private TextField manager_id;
 
-    private final Reposistory<Employee> reposistory;
+    @FXML
+    private DatePicker attendancedate;
 
-    public HelloController() throws Exception {
-        reposistory = new EmployeeRepository()
-                .Mapper(new EmployeeMapper())
+    @FXML
+    private DatePicker checkin;
+
+    @FXML
+    private DatePicker checkout;
+
+    @FXML
+    private TextField status;
+
+    @FXML
+    private TextField notes;
+
+    private final Reposistory<Attendance> reposistory;
+
+    public AttendanceController() throws Exception {
+        this.reposistory = new AttendanceRepository()
+                .Mapper(new AttendanceMapper())
                 .DatabaseConnection(DatabaseConnection.getConnection())
-                .TableName("Employees").build();
+                .TableName("Attendance").build();
     }
 
-    private Employee mapEmployee() {
+    private Attendance mapEntity() {
         EntityFactory entityFactoryProvider = new EntityFactoryImpl();
-        Employee employee = entityFactoryProvider.getBuilder(EmployeeBuilder.class, new EmployeeBuilder())
+        Attendance entity = entityFactoryProvider.getBuilder(AttendanceBuilder.class, new AttendanceBuilder())
+                .Attendance_id(Integer.parseInt(attendanceid.getText()))
                 .Employee_id(Integer.parseInt(employeeid.getText()))
-                .First_name(first_name.getText())
-                .Last_name(last_name.getText())
-                .Email(email.getText())
-                .Phone(phone.getText())
-                .Position(position.getText())
-                .Salary(Double.parseDouble(salary.getText()))
-                .Hire_date(Date.valueOf(hire_date.getValue()))
-                .Department_id(Integer.parseInt(department_id.getText()))
-                .Manager_id(Integer.parseInt(manager_id.getText()))
+                .Attendance_date(Date.valueOf(attendancedate.getValue()))
+                .Check_in(Date.valueOf(checkin.getValue()))
+                .Check_out(Date.valueOf(checkout.getValue()))
+                .Status(status.getText())
+                .Notes(notes.getText())
                 .build();
 
-        return employee;
+        return entity;
     }
 
     @FXML
-    protected void onAttendanceButtonClick(ActionEvent event) {
+    protected void onEmployeeButtonClick(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("attendance.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
             Parent root = fxmlLoader.load();
 
             Stage newStage = new Stage();
@@ -92,8 +89,7 @@ public class HelloController {
     @FXML
     protected void onUpdateButtonClick() {
         try {
-
-            reposistory.update(mapEmployee());
+            this.reposistory.update(mapEntity());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -111,7 +107,7 @@ public class HelloController {
     @FXML
     protected void onHelloButtonClick() {
         try {
-            reposistory.insert(mapEmployee());
+            reposistory.insert(mapEntity());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -120,10 +116,10 @@ public class HelloController {
     @FXML
     protected void onDeleteButtonClick() {
         try {
-            Employee employee = new Employee();
-            employee.setEmployee_id(Integer.parseInt(employeeid.getText()));
+            Attendance entity = new Attendance();
+            entity.setAttendance_id(Integer.parseInt(attendanceid.getText()));
 
-            reposistory.delete(employee);
+            reposistory.delete(entity);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
