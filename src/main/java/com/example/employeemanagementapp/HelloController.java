@@ -74,8 +74,10 @@ public class HelloController {
             Parent root = fxmlLoader.load();
 
             Stage newStage = new Stage();
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
             newStage.setTitle("Insert Attendance");
-            newStage.setScene(new Scene(root));
+            newStage.setScene(scene);
             newStage.setResizable(false);
             newStage.show();
 

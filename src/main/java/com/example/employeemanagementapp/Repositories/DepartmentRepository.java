@@ -9,5 +9,4 @@ public class DepartmentRepository extends Reposistory<Departments> {
     public DepartmentRepository() {
         super();
     }
-
 }

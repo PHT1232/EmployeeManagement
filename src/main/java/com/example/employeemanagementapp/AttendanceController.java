@@ -71,6 +71,8 @@ public class AttendanceController {
             Parent root = fxmlLoader.load();
 
             Stage newStage = new Stage();
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
             newStage.setTitle("Insert Attendance");
             newStage.setScene(new Scene(root));
             newStage.setResizable(false);
