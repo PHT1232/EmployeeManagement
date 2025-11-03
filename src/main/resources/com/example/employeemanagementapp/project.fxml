@@ -1,62 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/24.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.employeemanagementapp.ProjectController">
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<BorderPane prefHeight="590.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.employeemanagementapp.ProjectController">
 
     <!-- Sidebar -->
     <left>
         <VBox spacing="10" style="-fx-background-color: #2c3e50;">
-            <Label text="Navigation" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
-            <Button fx:id="ProjectButton" text="Project" styleClass="action-button"/>
-            <Button fx:id="DepartmentsButton" text="Department" styleClass="action-button"/>
-            <Button fx:id="EmployeeButton" text="Employee" onAction="#onEmployeeButtonClick" styleClass="action-button"/>
-            <Button fx:id="AttendanceButton" text="Attendance" onAction="#onAttendanceButtonClick" styleClass="action-button"/>
+            <Label style="-fx-text-fill: white; -fx-font-size: 16px;" text="Navigation" />
+            <Button fx:id="ProjectButton" styleClass="action-button" text="Project" />
+            <Button fx:id="DepartmentsButton" styleClass="action-button" text="Department" />
+            <Button fx:id="EmployeeButton" onAction="#onEmployeeButtonClick" styleClass="action-button" text="Employee" />
+            <Button fx:id="AttendanceButton" onAction="#onAttendanceButtonClick" styleClass="action-button" text="Attendance" />
         </VBox>
     </left>
 
     <!-- Main Content -->
     <center>
         <StackPane fx:id="contentArea">
-            <VBox alignment="TOP_CENTER" spacing="15" prefWidth="600" styleClass="form-container">
+            <VBox alignment="TOP_CENTER" prefHeight="546.0" prefWidth="600" spacing="15" styleClass="form-container">
                 <padding>
-                    <Insets top="30" right="40" bottom="30" left="40"/>
+                    <Insets bottom="30" left="40" right="40" top="30" />
                 </padding>
 
-                <Label text="Project Registration" styleClass="form-title"/>
+                <Label styleClass="form-title" text="Project Registration" />
 
                 <GridPane hgap="15" vgap="15">
                     <columnConstraints>
-                        <ColumnConstraints halignment="RIGHT" minWidth="100"/>
-                        <ColumnConstraints minWidth="300"/>
+                        <ColumnConstraints halignment="RIGHT" minWidth="100" />
+                        <ColumnConstraints minWidth="300" />
                     </columnConstraints>
 
-                    <Label text="Project ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <TextField fx:id="projectid" promptText="Enter project ID" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label text="Project ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <TextField fx:id="projectid" promptText="Enter project ID" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                    <Label text="Project Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <TextField fx:id="projectname" promptText="Enter project name" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label text="Project Name:" GridPane.rowIndex="1" />
+                    <TextField fx:id="projectname" promptText="Enter project name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                    <Label text="Description:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                    <TextField fx:id="description" promptText="Enter description" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <TextField fx:id="description" promptText="Enter description" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                    <Label text="Start Date:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                    <DatePicker fx:id="startdate" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    <Label text="Start Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <DatePicker fx:id="startdate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                    <Label text="End Date:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                    <DatePicker fx:id="enddate" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    <Label text="End Date:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <DatePicker fx:id="enddate" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
                 </GridPane>
 
-                <HBox spacing="10" alignment="CENTER" styleClass="button-bar">
-                    <Button text="Update" onAction="#onUpdateButtonClick" styleClass="action-button"/>
-                    <Button text="Add" onAction="#onHelloButtonClick" styleClass="action-button"/>
-                    <Button text="List" onAction="#onListAllButtonClick" styleClass="action-button"/>
-                    <Button text="Delete" onAction="#onDeleteButtonClick" styleClass="action-button"/>
+                <HBox alignment="CENTER" spacing="10" styleClass="button-bar">
+                    <Button onAction="#onUpdateButtonClick" styleClass="action-button" text="Update" />
+                    <Button onAction="#onHelloButtonClick" styleClass="action-button" text="Add" />
+                    <Button onAction="#onListAllButtonClick" styleClass="action-button" text="List" />
+                    <Button onAction="#onDeleteButtonClick" styleClass="action-button" text="Delete" />
                 </HBox>
+                    <Label text="User Directory" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <TableView fx:id="userTable" prefHeight="250">
+                    <columns>
+                        <TableColumn fx:id="nameColumn" text="Name" prefWidth="120"/>
+                        <TableColumn fx:id="emailColumn" text="Email" prefWidth="180"/>
+                        <TableColumn fx:id="roleColumn" text="Role" prefWidth="100"/>
+                    </columns>
+                </TableView>
             </VBox>
         </StackPane>
     </center>

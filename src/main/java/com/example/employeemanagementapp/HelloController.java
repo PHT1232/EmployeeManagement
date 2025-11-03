@@ -67,22 +67,35 @@ public class HelloController {
         return employee;
     }
 
+    public void loadNewController(ActionEvent event, String fxmlFileName, String title, String styleCssFileName) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFileName));
+        Parent root = fxmlLoader.load();
+
+        Stage newStage = new Stage();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource(styleCssFileName).toExternalForm());
+        newStage.setTitle(title);
+        newStage.setScene(scene);
+        newStage.setResizable(false);
+        newStage.show();
+
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
+    }
+
     @FXML
     protected void onAttendanceButtonClick(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("attendance.fxml"));
-            Parent root = fxmlLoader.load();
+            loadNewController(event, "attendance.fxml", "Attendance", "style.css");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-            Stage newStage = new Stage();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-            newStage.setTitle("Insert Attendance");
-            newStage.setScene(scene);
-            newStage.setResizable(false);
-            newStage.show();
-
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.close();
+    @FXML
+    protected void onProjectButtonClick(ActionEvent event) {
+        try {
+            loadNewController(event, "project.fxml", "Project", "style.css");
         } catch (IOException ex) {
             ex.printStackTrace();
         }

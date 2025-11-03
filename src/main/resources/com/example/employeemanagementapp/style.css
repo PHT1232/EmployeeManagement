@@ -33,3 +33,18 @@
 .action-button:hover {
     -fx-background-color: #2980b9;
 }
+
+.table-view {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5;
+}
+
+.table-column {
+    -fx-alignment: CENTER-LEFT;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #ffe082; /* light amber */
+    -fx-text-fill: black;
+}
