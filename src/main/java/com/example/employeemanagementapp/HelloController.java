@@ -41,10 +41,10 @@ public class HelloController {
     @FXML
     private TextField manager_id;
 
-    private final Reposistory<Employee> reposistory;
+    private final EmployeeRepository reposistory;
 
     public HelloController() throws Exception {
-        reposistory = new EmployeeRepository()
+        reposistory = (EmployeeRepository) new EmployeeRepository()
                 .Mapper(new EmployeeMapper())
                 .DatabaseConnection(DatabaseConnection.getConnection())
                 .TableName("Employees").build();

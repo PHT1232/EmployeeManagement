@@ -5,6 +5,7 @@ module com.example.employeemanagementapp {
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
+    requires com.example.employeemanagementapp;
 
     opens com.example.employeemanagementapp to javafx.fxml;
     exports com.example.employeemanagementapp;
