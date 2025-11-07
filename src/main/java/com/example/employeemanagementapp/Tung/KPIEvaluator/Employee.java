@@ -8,6 +8,7 @@ public class Employee {
     private double salary;
     private double totalHoursMonth;
     private double bonusHoursMonth;
+    private double projectBonus;   
     private double monthlySalary;
 
     // ✨ Constructors
@@ -104,6 +105,14 @@ public class Employee {
     }
     public void setMonthlySalary(double monthlySalary) {
         this.monthlySalary = monthlySalary;
+    }
+
+    public double getProjectBonus() {
+        return projectBonus;
+    }
+
+    public void setProjectBonus(double projectBonus) {
+        this.projectBonus = projectBonus;
     }
 
     // 🩷 Optional helper

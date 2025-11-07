@@ -9,7 +9,7 @@ public class MonthlyKPIEvaluator {
         double baseWage;
         double totalHours = 0.0;
         double bonusHours = 0.0;
-        int daysQualified = 0; 
+        int daysQualified = 0;
     }
 
     public static void main(String[] args) throws Exception {
@@ -22,6 +22,7 @@ public class MonthlyKPIEvaluator {
 
         try (Connection conn = DbConnector.getConnection()) {
             Map<Integer, MonthlyStats> statsMap = fetchMonthlyData(conn, monthStart, monthEnd);
+            updateProjectBonuses(conn);
             updateMonthlySalaries(conn, statsMap);
             displayTop10(conn);
         }
@@ -88,6 +89,17 @@ public class MonthlyKPIEvaluator {
                 double bonus = ms.bonusHours * (ms.baseWage * 0.15);
                 double totalSalary = basePay + bonus;
 
+                String getBonusSql = "SELECT project_bonus_month FROM Employees WHERE employee_id = ?";
+                try (PreparedStatement bps = conn.prepareStatement(getBonusSql)) {
+                    bps.setInt(1, ms.id);
+                    try (ResultSet brs = bps.executeQuery()) {
+                        if (brs.next()) {
+                            double projectBonus = brs.getDouble("project_bonus_month");
+                            totalSalary += projectBonus;
+                        }
+                    }
+                }
+
                 ups.setDouble(1, round(ms.totalHours, 2));
                 ups.setDouble(2, round(ms.bonusHours, 2));
                 ups.setDouble(3, round(totalSalary, 2));
@@ -114,6 +126,39 @@ public class MonthlyKPIEvaluator {
                         rs.getString("name"),
                         rs.getInt("employee_id"),
                         rs.getDouble("bonus_hours_month"));
+            }
+        }
+    }
+
+    private static void updateProjectBonuses(Connection conn) throws SQLException {
+        String sql = "SELECT p.project_id, p.total_revenue, p.commission_rate, COUNT(pa.employee_id) AS team_size " +
+                "FROM Projects p " +
+                "JOIN ProjectAssignments pa ON p.project_id = pa.project_id " +
+                "WHERE p.total_revenue > 0 " + // only completed projects
+                "GROUP BY p.project_id";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int projectId = rs.getInt("project_id");
+                double revenue = rs.getDouble("total_revenue");
+                double commissionRate = rs.getDouble("commission_rate");
+                int teamSize = rs.getInt("team_size");
+
+                double projectBonusEach = (revenue * commissionRate) / teamSize;
+
+                // update each team member
+                String updateSql = "UPDATE Employees e " +
+                        "JOIN ProjectAssignments pa ON e.employee_id = pa.employee_id " +
+                        "SET e.project_bonus_month = e.project_bonus_month + ? " +
+                        "WHERE pa.project_id = ?";
+
+                try (PreparedStatement ups = conn.prepareStatement(updateSql)) {
+                    ups.setDouble(1, projectBonusEach);
+                    ups.setInt(2, projectId);
+                    ups.executeUpdate();
+                }
             }
         }
     }
