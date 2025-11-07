@@ -1,8 +1,10 @@
 package com.example.employeemanagementapp.Service;
 
+import com.example.employeemanagementapp.Builders.EmployeeBuilder;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
+import com.example.employeemanagementapp.Models.MonthlyStats;
 import com.example.employeemanagementapp.Repositories.EmployeeRepository;
 import com.example.employeemanagementapp.Repositories.Reposistory;
 
@@ -23,14 +25,6 @@ public class EmployeeService {
                 .TableName("Employees").build();
     }
 
-    static class MonthlyStats {
-        int id;
-        String name;
-        double baseWage;
-        double totalHours = 0.0;
-        double bonusHours = 0.0;
-        int daysQualified = 0;
-    }
 
     private Map<Integer, MonthlyStats> fetchMonthlyData(Date monthStart, Date monthEnd) {
         Map<Integer, MonthlyStats> statsMap = new HashMap<>();
@@ -38,9 +32,9 @@ public class EmployeeService {
             while (rs.next()) {
                 int id = rs.getInt("employee_id");
                 MonthlyStats ms = statsMap.getOrDefault(id, new MonthlyStats());
-                ms.id = id;
-                ms.name = rs.getString("name");
-                ms.baseWage = rs.getDouble("base_wage");
+                ms.setId(id);
+                ms.setName(rs.getString("name"));
+                ms.setBaseWage(rs.getDouble("base_wage"));
 
                 Timestamp checkIn = rs.getTimestamp("check_in");
                 Timestamp checkOut = rs.getTimestamp("check_out");
@@ -49,10 +43,10 @@ public class EmployeeService {
                     double hours = (checkOut.getTime() - checkIn.getTime()) / (1000.0 * 60 * 60);
 
                     if (hours >= 6.0) {
-                        ms.daysQualified++;
-                        ms.totalHours += hours;
+                        ms.increaseDaysQualified(1);
+                        ms.setTotalHours(hours);
                         if (hours >= 7.0) {
-                            ms.bonusHours += (hours - 6.0);
+                            ms.increaseBonusHours(hours - 6.0);
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-package com.example.crm.model;
+package com.example.employeemanagementapp.Tung.Front;
 
 import javafx.beans.property.*;
 
