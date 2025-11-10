@@ -1,5 +1,6 @@
 package com.example.employeemanagementapp.Service;
 
+import com.example.employeemanagementapp.Adapters.DatabaseObjectToMonthlyStatsAdapter;
 import com.example.employeemanagementapp.Builders.EmployeeBuilder;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Employee;
@@ -12,7 +13,9 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EmployeeService {
@@ -26,41 +29,39 @@ public class EmployeeService {
     }
 
 
-    private Map<Integer, MonthlyStats> fetchMonthlyData(Date monthStart, Date monthEnd) {
-        Map<Integer, MonthlyStats> statsMap = new HashMap<>();
+    private List<MonthlyStats> fetchMonthlyData(Date monthStart, Date monthEnd) {
+        List<MonthlyStats> list = new ArrayList<>();
+
         try (ResultSet rs = employeeReposistory.fetchMonthlyData(monthStart, monthEnd)){
-            while (rs.next()) {
-                int id = rs.getInt("employee_id");
-                MonthlyStats ms = statsMap.getOrDefault(id, new MonthlyStats());
-                ms.setId(id);
-                ms.setName(rs.getString("name"));
-                ms.setBaseWage(rs.getDouble("base_wage"));
-
-                Timestamp checkIn = rs.getTimestamp("check_in");
-                Timestamp checkOut = rs.getTimestamp("check_out");
-
-                if (checkIn != null && checkOut != null) {
-                    double hours = (checkOut.getTime() - checkIn.getTime()) / (1000.0 * 60 * 60);
-
-                    if (hours >= 6.0) {
-                        ms.increaseDaysQualified(1);
-                        ms.setTotalHours(hours);
-                        if (hours >= 7.0) {
-                            ms.increaseBonusHours(hours - 6.0);
-                        }
-                    }
-                }
-                statsMap.put(id, ms);
-            }
+            DatabaseObjectToMonthlyStatsAdapter adapter = new DatabaseObjectToMonthlyStatsAdapter();
+            list = adapter.convert(rs);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return statsMap;
+        return list;
     }
 
-    public void updateMonthlySalaries(Map<Integer, MonthlyStats> statsMap) {
-        Employee employee = new Employee();
+    public void updateMonthlySalaries(List<MonthlyStats> list) throws Exception {
+        Employee employee;
+        for (MonthlyStats ms : list) {
+            double basePay = ms.getBaseWage() * ms.getDaysQualified();
+            double bonus = ms.getBonusHours() * (ms.getBaseWage() * 0.15);
+            double totalSalary = basePay + bonus;
 
+            double projectBonus = employeeReposistory.fetchProjectBonusMonth(ms.getEmployee_id());
+            totalSalary += projectBonus;
+
+            employee = new EmployeeBuilder()
+                    .Employee_id(ms.getId())
+                    .Total_hours_month(ms.getTotalHours())
+                    .Bonus_hours_month(ms.getBonusHours())
+                    .Salary(totalSalary)
+                    .build();
+
+            employeeReposistory.update(employee);
+        }
     }
+
+    private
 }

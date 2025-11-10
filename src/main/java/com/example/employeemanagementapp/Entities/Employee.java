@@ -12,11 +12,46 @@ public class Employee {
     private double salary;
     private Date hire_date;
     private int department_id;
-    private int manager_id;
     private Date created_at;
     private Date updated_at;
+    private double total_hours_month;
+    private double bonus_hours_month;
+    private double monthly_salary;
+    private double project_bonus_month;
 
     public Employee(){}
+
+    public double getTotal_hours_month() {
+        return total_hours_month;
+    }
+
+    public void setTotal_hours_month(double total_hours_month) {
+        this.total_hours_month = total_hours_month;
+    }
+
+    public double getBonus_hours_month() {
+        return bonus_hours_month;
+    }
+
+    public void setBonus_hours_month(double bonus_hours_month) {
+        this.bonus_hours_month = bonus_hours_month;
+    }
+
+    public double getMonthly_salary() {
+        return monthly_salary;
+    }
+
+    public void setMonthly_salary(double monthly_salary) {
+        this.monthly_salary = monthly_salary;
+    }
+
+    public double getProject_bonus_month() {
+        return project_bonus_month;
+    }
+
+    public void setProject_bonus_month(double project_bonus_month) {
+        this.project_bonus_month = project_bonus_month;
+    }
 
     public int getEmployee_id() {
         return employee_id;
@@ -90,14 +125,6 @@ public class Employee {
         this.department_id = department_id;
     }
 
-    public int getManager_id() {
-        return manager_id;
-    }
-
-    public void setManager_id(int manager_id) {
-        this.manager_id = manager_id;
-    }
-
     public Date getCreated_at() {
         return created_at;
     }
@@ -126,7 +153,6 @@ public class Employee {
                 ", salary=" + salary +
                 ", hire_date=" + hire_date +
                 ", department_id=" + department_id +
-                ", manager_id=" + manager_id +
                 ", created_at=" + created_at +
                 ", updated_at=" + updated_at +
                 '}';

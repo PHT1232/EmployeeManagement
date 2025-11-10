@@ -12,6 +12,8 @@ public class ProjectBuilder extends Builder<Projects> {
     private Date end_date;
     private Date created_at;
     private Date updated_at;
+    private double total_revenue;
+    private double commission_rate;
 
     public ProjectBuilder Project_id(int project_id) {
         this.project_id = project_id;
@@ -48,6 +50,16 @@ public class ProjectBuilder extends Builder<Projects> {
         return this;
     }
 
+    public ProjectBuilder Total_revenue(double total_revenue) {
+        this.total_revenue = total_revenue;
+        return this;
+    }
+
+    public ProjectBuilder Commission_rate(double commission_rate) {
+        this.commission_rate = commission_rate;
+        return this;
+    }
+
     @Override
     public Projects build() {
         Projects projects = new Projects();
@@ -58,6 +70,8 @@ public class ProjectBuilder extends Builder<Projects> {
         projects.setEnd_date(end_date);
         projects.setCreated_at(created_at);
         projects.setUpdated_at(updated_at);
+        projects.setTotal_revenue(total_revenue);
+        projects.setCommission_rate(commission_rate);
 
         return projects;
     }

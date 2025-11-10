@@ -10,6 +10,27 @@ public class Projects {
     private Date end_date;
     private Date created_at;
     private Date updated_at;
+    private double total_revenue;
+    private double commission_rate;
+
+    public Projects() {
+    }
+
+    public double getTotal_revenue() {
+        return total_revenue;
+    }
+
+    public void setTotal_revenue(double total_revenue) {
+        this.total_revenue = total_revenue;
+    }
+
+    public double getCommission_rate() {
+        return commission_rate;
+    }
+
+    public void setCommission_rate(double commission_rate) {
+        this.commission_rate = commission_rate;
+    }
 
     public Date getUpdated_at() {
         return updated_at;

@@ -14,9 +14,12 @@ public class EmployeeBuilder extends Builder<Employee> {
     private double salary;
     private Date hire_date;
     private int department_id;
-    private int manager_id;
     private Date created_at;
     private Date updated_at;
+    private double total_hours_month;
+    private double bonus_hours_month;
+    private double monthly_salary;
+    private double project_bonus_month;
 
     public EmployeeBuilder Employee_id(int employee_id) {
         this.employee_id = employee_id;
@@ -63,11 +66,6 @@ public class EmployeeBuilder extends Builder<Employee> {
         return this;
     }
 
-    public EmployeeBuilder Manager_id(int manager_id) {
-        this.manager_id = manager_id;
-        return this;
-    }
-
     public EmployeeBuilder Created_at(Date created_at) {
         this.created_at = created_at;
         return this;
@@ -75,6 +73,26 @@ public class EmployeeBuilder extends Builder<Employee> {
 
     public EmployeeBuilder Updated_at(Date updated_at) {
         this.updated_at = updated_at;
+        return this;
+    }
+
+    public EmployeeBuilder Total_hours_month(double total_hours_month) {
+        this.total_hours_month = total_hours_month;
+        return this;
+    }
+
+    public EmployeeBuilder Bonus_hours_month(double bonus_hours_month) {
+        this.bonus_hours_month = bonus_hours_month;
+        return this;
+    }
+
+    public EmployeeBuilder Monthly_salary(double monthly_salary) {
+        this.monthly_salary = monthly_salary;
+        return this;
+    }
+
+    public EmployeeBuilder Project_bonus_month(double project_bonus_month) {
+        this.project_bonus_month = project_bonus_month;
         return this;
     }
 
@@ -90,9 +108,12 @@ public class EmployeeBuilder extends Builder<Employee> {
         employee.setSalary(salary);
         employee.setHire_date(hire_date);
         employee.setDepartment_id(department_id);
-        employee.setManager_id(manager_id);
         employee.setCreated_at(created_at);
         employee.setUpdated_at(updated_at);
+        employee.setTotal_hours_month(total_hours_month);
+        employee.setBonus_hours_month(bonus_hours_month);
+        employee.setMonthly_salary(monthly_salary);
+        employee.setProject_bonus_month(project_bonus_month);
 
         return employee;
     }

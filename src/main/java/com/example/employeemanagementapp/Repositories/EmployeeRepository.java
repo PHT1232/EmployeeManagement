@@ -4,6 +4,8 @@ import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.RowMapper;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeeRepository extends Reposistory<Employee> {
     public EmployeeRepository() {
@@ -26,5 +28,33 @@ public class EmployeeRepository extends Reposistory<Employee> {
 
             return ps.executeQuery();
         }
+    }
+
+    public double fetchProjectBonusMonth(int id) throws Exception {
+        String sql = "SELECT project_bonus_month FROM Employees WHERE employee_id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+            double bonusMonth = rs.getDouble(0);
+            return bonusMonth;
+        }
+    }
+
+    public List<Employee> fetchTop10() throws Exception {
+        String sql = "SELECT employee_id, CONCAT(first_name, ' ', last_name) AS name, bonus_hours_month " +
+                "FROM employees " +
+                "ORDER BY bonus_hours_month DESC " +
+                "LIMIT 10";
+
+        List<Employee> list = new ArrayList<>();
+        try (Statement statement = connection.createStatement();ResultSet rs = statement.executeQuery(sql)) {
+            while (rs.next()) {
+                list.add(rowMapper.mapRow(rs));
+            }
+        }
+
+        return list;
     }
 }
