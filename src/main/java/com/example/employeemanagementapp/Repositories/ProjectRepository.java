@@ -6,6 +6,7 @@ import com.example.employeemanagementapp.Mapper.RowMapper;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectRepository extends Reposistory<Projects> {
@@ -20,8 +21,11 @@ public class ProjectRepository extends Reposistory<Projects> {
                 "WHERE p.total_revenue > 0 " +
                 "GROUP BY p.project_id";
 
+        List<Projects> list = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
         }
+
+        return list;
     }
 }

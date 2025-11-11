@@ -1,7 +1,6 @@
 package com.example.employeemanagementapp.Service;
 
 import com.example.employeemanagementapp.Adapters.DatabaseObjectToMonthlyStatsAdapter;
-import com.example.employeemanagementapp.Builders.EmployeeBuilder;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
@@ -52,7 +51,7 @@ public class EmployeeService {
             double projectBonus = employeeReposistory.fetchProjectBonusMonth(ms.getEmployee_id());
             totalSalary += projectBonus;
 
-            employee = new EmployeeBuilder()
+            employee = new Employee.Builder()
                     .Employee_id(ms.getId())
                     .Total_hours_month(ms.getTotalHours())
                     .Bonus_hours_month(ms.getBonusHours())
@@ -63,5 +62,4 @@ public class EmployeeService {
         }
     }
 
-    private
 }

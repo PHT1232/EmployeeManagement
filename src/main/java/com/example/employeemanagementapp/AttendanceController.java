@@ -1,6 +1,5 @@
 package com.example.employeemanagementapp;
 
-import com.example.employeemanagementapp.Builders.AttendanceBuilder;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Attendance;
 import com.example.employeemanagementapp.Mapper.AttendanceMapper;
@@ -51,7 +50,7 @@ public class AttendanceController {
     }
 
     private Attendance mapEntity() {
-        Attendance entity = new AttendanceBuilder()
+        Attendance entity = new Attendance.Builder()
                 .Attendance_id(Integer.parseInt(attendanceid.getText()))
                 .Employee_id(Integer.parseInt(employeeid.getText()))
                 .Attendance_date(Date.valueOf(attendancedate.getValue()))

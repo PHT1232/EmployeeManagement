@@ -1,6 +1,5 @@
 package com.example.employeemanagementapp;
 
-import com.example.employeemanagementapp.Builders.EmployeeBuilder;
 import com.example.employeemanagementapp.Entities.Employee;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

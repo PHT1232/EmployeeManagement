@@ -1,6 +1,5 @@
 package com.example.employeemanagementapp.Mapper;
 
-import com.example.employeemanagementapp.Builders.AttendanceBuilder;
 import com.example.employeemanagementapp.Entities.Attendance;
 
 import java.sql.ResultSet;
@@ -8,7 +7,7 @@ import java.sql.ResultSet;
 public class AttendanceMapper implements RowMapper<Attendance> {
     @Override
     public Attendance mapRow(ResultSet resultSet) throws Exception {
-        Attendance attendance = new AttendanceBuilder()
+        Attendance attendance = new Attendance.Builder()
                 .Attendance_id(resultSet.getInt("attendance_id"))
                 .Employee_id(resultSet.getInt("employee_id"))
                 .Attendance_date(resultSet.getDate("attendance_date"))

@@ -1,6 +1,5 @@
 package com.example.employeemanagementapp.Mapper;
 
-import com.example.employeemanagementapp.Builders.EmployeeBuilder;
 import com.example.employeemanagementapp.Entities.Employee;
 
 import java.sql.ResultSet;
@@ -9,7 +8,7 @@ public class EmployeeMapper implements RowMapper<Employee> {
 
     @Override
     public Employee mapRow(ResultSet resultSet) throws Exception {
-        Employee employee = new EmployeeBuilder()
+        Employee employee = new Employee.Builder()
                 .Employee_id(resultSet.getInt("employee_id"))
                 .First_name(resultSet.getString("first_name"))
                 .Last_name(resultSet.getString("last_name"))
@@ -19,7 +18,6 @@ public class EmployeeMapper implements RowMapper<Employee> {
                 .Salary(resultSet.getDouble("salary"))
                 .Hire_date(resultSet.getDate("hire_date"))
                 .Department_id(resultSet.getInt("department_id"))
-                .Manager_id(resultSet.getInt("manager_id"))
                 .Created_at(resultSet.getDate("created_at"))
                 .Updated_at(resultSet.getDate("updated_at"))
                 .build();

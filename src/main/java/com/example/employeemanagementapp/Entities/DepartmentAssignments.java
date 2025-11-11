@@ -6,6 +6,7 @@ public class DepartmentAssignments {
 
     public DepartmentAssignments() {
     }
+    
 
     public int getDepartment_id() {
         return department_id;

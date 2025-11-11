@@ -1,6 +1,5 @@
 package com.example.employeemanagementapp;
 
-import com.example.employeemanagementapp.Builders.ProjectBuilder;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Projects;
 import com.example.employeemanagementapp.Mapper.ProjectMapper;
@@ -46,7 +45,7 @@ public class ProjectController {
     }
 
     private Projects mapEntity() {
-        Projects entity = new ProjectBuilder()
+        Projects entity = new Projects.Builder()
                 .Project_id(Integer.parseInt(projectid.getText()))
                 .Project_name(projectname.getText())
                 .Description(description.getText())
@@ -119,7 +118,7 @@ public class ProjectController {
     @FXML
     protected void onDeleteButtonClick() {
         try {
-            Projects entity = new Projects();
+            Projects entity = new Projects.Builder().build();
             entity.setProject_id(Integer.parseInt(projectid.getText()));
 
             reposistory.delete(entity);

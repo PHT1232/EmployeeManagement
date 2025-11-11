@@ -1,0 +1,91 @@
+.nav_button {
+  -fx-padding: 10 0 10 0;
+  -fx-background-color: white;
+  -fx-font-weight: bold;
+  -fx-text-fill: black;
+  -fx-pref-width: 250;
+  -fx-background-radius: 15;
+  -fx-border-radius: 15;
+}
+.nav_button:hover {
+  -fx-padding: 10 0 10 0;
+  -fx-background-color: lightgray;
+  -fx-font-weight: bold;
+  -fx-text-fill: black;
+  -fx-pref-width: 250;
+  -fx-background-radius: 15;
+  -fx-border-radius: 15;
+}
+.nav_button_select {
+  -fx-padding: 10 0 10 0;
+  -fx-background-color: black;
+  -fx-font-weight: bold;
+  -fx-text-fill: white;
+  -fx-pref-width: 250;
+  -fx-background-radius: 15;
+  -fx-border-radius: 15;
+}
+.card {
+    -fx-pref-width: 300;
+    -fx-background-color: white;
+    -fx-border-radius: 15;
+    -fx-border-color: lightgray;
+    -fx-background-radius: 15;
+}
+.table_card {
+    -fx-background-color: white;
+    -fx-border-radius: 15;
+    -fx-border-color: lightgray;
+    -fx-background-radius: 15;
+}
+
+.custom-date-picker {
+    -fx-background-color: #ffffff;
+    -fx-border-color: lightgray;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 5;
+    -fx-font-size: 14px;
+}
+
+.button-regular {
+    -fx-background-color: #ffffff;
+    -fx-border-color: lightgray;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 5;
+    -fx-font-size: 14px;
+}
+
+.button-selected {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 5;
+    -fx-font-size: 14px;
+}
+
+.custom-date-picker .text-field {
+    -fx-text-fill: #2c3e50;
+    -fx-background-color: transparent;
+    -fx-font-weight: bold;
+}
+
+.date-picker-popup {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.date-picker-popup .day-cell {
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 5;
+}
+
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}

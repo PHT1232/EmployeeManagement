@@ -1,6 +1,5 @@
 package com.example.employeemanagementapp.Mapper;
 
-import com.example.employeemanagementapp.Builders.ProjectBuilder;
 import com.example.employeemanagementapp.Entities.Projects;
 
 import java.sql.ResultSet;
@@ -8,7 +7,7 @@ import java.sql.ResultSet;
 public class ProjectMapper implements RowMapper<Projects> {
     @Override
     public Projects mapRow(ResultSet resultSet) throws Exception {
-        Projects projects = new ProjectBuilder()
+        Projects projects = new Projects.Builder()
                 .Project_id(resultSet.getInt("project_id"))
                 .Project_name(resultSet.getString("project_name"))
                 .Description(resultSet.getString("description"))
