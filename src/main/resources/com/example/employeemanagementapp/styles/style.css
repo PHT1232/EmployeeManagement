@@ -30,6 +30,12 @@
   -fx-background-radius: 15;
   -fx-border-radius: 15;
 }
+.textfield_css {
+   -fx-padding: 10;
+   -fx-background-color: #eeeeee;
+   -fx-background-radius: 15;
+   -fx-border-radius: 15;
+}
 .card {
     -fx-pref-width: 300;
     -fx-background-color: white;

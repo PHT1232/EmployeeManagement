@@ -9,12 +9,13 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1000.0" minWidth="1500.0" prefHeight="1250.0" prefWidth="1834.0" style="-fx-background-color: #eeeeee;" stylesheets="@styles/style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.employeemanagementapp.HelloController">
+<BorderPane fx:id="app_borderpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1000.0" minWidth="1500.0" prefHeight="1250.0" prefWidth="1834.0" style="-fx-background-color: #eeeeee;" stylesheets="@styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.employeemanagementapp.HelloController">
    <top>
       <VBox prefHeight="50.0" prefWidth="1492.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
          <children>
@@ -57,7 +58,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="employees_nav_button" mnemonicParsing="false" styleClass="nav_button" text="Employees">
+            <Button fx:id="employees_nav_button" mnemonicParsing="false" onAction="#onEmployeeNavButtonClick" styleClass="nav_button" text="Employees">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
@@ -228,75 +229,147 @@
                </VBox.margin>
             </HBox>
             <ScrollPane fx:id="main_scrollpane" hbarPolicy="NEVER" prefWidth="1834.0" style="-fx-background: #eeeeee; -fx-border-color: #eeeeee;" vbarPolicy="NEVER">
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
                <content>
-                  <BorderPane fx:id="main_borderpane" prefHeight="1027.0" prefWidth="1600.0">
-                     <right>
-                        <VBox alignment="CENTER" prefHeight="683.0" prefWidth="429.0" styleClass="table_card" BorderPane.alignment="CENTER">
-                           <children>
-                              <VBox style="-fx-border-radius: 10; -fx-background-radius: 10;">
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <BorderPane fx:id="main_borderpane" prefHeight="1027.0" prefWidth="1600.0">
+                           <right>
+                              <VBox alignment="CENTER" prefHeight="683.0" prefWidth="429.0" styleClass="table_card" BorderPane.alignment="CENTER">
                                  <children>
-                                    <Label fx:id="recent_activity_label" text="Recent Activity">
-                                       <font>
-                                          <Font name="System Bold" size="25.0" />
-                                       </font>
-                                       <VBox.margin>
-                                          <Insets left="15.0" top="15.0" />
-                                       </VBox.margin>
-                                    </Label>
-                                    <Label fx:id="latest_checkin_out_event_label" style="-fx-text-fill: gray;" text="Latest check-in/out events">
-                                       <font>
-                                          <Font size="15.0" />
-                                       </font>
-                                       <VBox.margin>
-                                          <Insets left="15.0" />
-                                       </VBox.margin>
-                                    </Label>
-                                    <ScrollPane hbarPolicy="NEVER" prefHeight="624.0" prefWidth="427.0" style="-fx-background: white; -fx-border-color: white;" vbarPolicy="NEVER">
-                                       <content>
-                                          <VBox prefHeight="100.0" prefWidth="409.0" style="-fx-border-color: transparent transparent black transparent;">
-                                             <children>
-                                                <Label style="-fx-text-fill: green;" text="Sarah Johnson">
-                                                   <font>
-                                                      <Font size="20.0" />
-                                                   </font>
-                                                </Label>
-                                                <Label style="-fx-text-fill: gray;" text="Checked in">
-                                                   <font>
-                                                      <Font size="15.0" />
-                                                   </font>
-                                                   <VBox.margin>
-                                                      <Insets top="10.0" />
-                                                   </VBox.margin>
-                                                </Label>
-                                                <Label text="2 minutes ago">
-                                                   <font>
-                                                      <Font size="15.0" />
-                                                   </font>
-                                                   <VBox.margin>
-                                                      <Insets top="5.0" />
-                                                   </VBox.margin>
-                                                </Label>
-                                             </children>
-                                          </VBox>
-                                       </content>
-                                       <VBox.margin>
-                                          <Insets left="15.0" right="15.0" top="15.0" />
-                                       </VBox.margin>
-                                    </ScrollPane>
+                                    <VBox style="-fx-border-radius: 10; -fx-background-radius: 10;">
+                                       <children>
+                                          <Label fx:id="recent_activity_label" text="Recent Activity">
+                                             <font>
+                                                <Font name="System Bold" size="25.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets left="15.0" top="15.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <Label fx:id="latest_checkin_out_event_label" style="-fx-text-fill: gray;" text="Latest check-in/out events">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets left="15.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <ScrollPane hbarPolicy="NEVER" prefHeight="624.0" prefWidth="427.0" style="-fx-background: white; -fx-border-color: white;" vbarPolicy="NEVER">
+                                             <content>
+                                                <VBox prefHeight="100.0" prefWidth="409.0" style="-fx-border-color: transparent transparent black transparent;">
+                                                   <children>
+                                                      <Label style="-fx-text-fill: green;" text="Sarah Johnson">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label style="-fx-text-fill: gray;" text="Checked in">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <Label text="2 minutes ago">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                         <VBox.margin>
+                                                            <Insets top="5.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                   </children>
+                                                </VBox>
+                                             </content>
+                                             <VBox.margin>
+                                                <Insets left="15.0" right="15.0" top="15.0" />
+                                             </VBox.margin>
+                                          </ScrollPane>
+                                       </children>
+                                    </VBox>
                                  </children>
+                                 <BorderPane.margin>
+                                    <Insets left="15.0" right="20.0" />
+                                 </BorderPane.margin>
                               </VBox>
-                           </children>
-                           <BorderPane.margin>
-                              <Insets left="15.0" right="20.0" />
-                           </BorderPane.margin>
-                        </VBox>
-                     </right>
-                     <center>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="152.0" styleClass="table_card" BorderPane.alignment="CENTER">
-                           <children>
-                              <VBox>
+                           </right>
+                           <center>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="152.0" styleClass="table_card" BorderPane.alignment="CENTER">
                                  <children>
-                                    <Label fx:id="employee_status_label" text="Employee Status">
+                                    <VBox>
+                                       <children>
+                                          <Label fx:id="employee_status_label" text="Employee Status">
+                                             <VBox.margin>
+                                                <Insets left="10.0" top="15.0" />
+                                             </VBox.margin>
+                                             <font>
+                                                <Font name="System Bold" size="20.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="real_time_label" style="-fx-text-fill: gray;" text="Real-time check-in/check-out status">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <DatePicker promptText="Select a date" styleClass="custom-date-picker" />
+                                                <ChoiceBox fx:id="department_filter_box" prefWidth="150.0" styleClass="button-regular">
+                                                   <HBox.margin>
+                                                      <Insets left="15.0" />
+                                                   </HBox.margin>
+                                                </ChoiceBox>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets left="10.0" top="20.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox prefHeight="26.0" VBox.vgrow="NEVER">
+                                             <children>
+                                                <Button fx:id="all_button_filter" mnemonicParsing="false" onAction="#onAllFilterClick" styleClass="button-regular" text="All">
+                                                   <HBox.margin>
+                                                      <Insets right="10.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button fx:id="checked_in_button_filter" mnemonicParsing="false" onAction="#onCheckedInFilterClick" styleClass="button-regular" text="Checked In">
+                                                   <HBox.margin>
+                                                      <Insets right="10.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button fx:id="checked_out_button_filter" mnemonicParsing="false" onAction="#onCheckedOutFilterClick" styleClass="button-regular" text="Checked Out" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets left="10.0" top="15.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <TableView prefHeight="704.0" prefWidth="1370.0">
+                                            <columns>
+                                              <TableColumn prefWidth="75.0" text="C1" />
+                                              <TableColumn prefWidth="75.0" text="C2" />
+                                            </columns>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <BorderPane.margin>
+                                    <Insets left="15.0" right="10.0" />
+                                 </BorderPane.margin>
+                              </VBox>
+                           </center>
+                           <bottom>
+                              <VBox alignment="CENTER_LEFT" prefHeight="329.0" prefWidth="1435.0" styleClass="table_card" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Label fx:id="top10_label" text="Top 10 Performers - Highest Overtime This Month">
                                        <VBox.margin>
                                           <Insets left="10.0" top="15.0" />
                                        </VBox.margin>
@@ -304,7 +377,7 @@
                                           <Font name="System Bold" size="20.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="real_time_label" style="-fx-text-fill: gray;" text="Real-time check-in/check-out status">
+                                    <Label fx:id="below_top10_label" style="-fx-text-fill: gray;" text="Employees who have worked the most overtime hours">
                                        <VBox.margin>
                                           <Insets left="10.0" />
                                        </VBox.margin>
@@ -312,93 +385,25 @@
                                           <Font size="15.0" />
                                        </font>
                                     </Label>
-                                    <HBox prefHeight="100.0" prefWidth="200.0">
-                                       <children>
-                                          <DatePicker promptText="Select a date" styleClass="custom-date-picker" />
-                                          <ChoiceBox fx:id="department_filter_box" prefWidth="150.0" styleClass="button-regular">
-                                             <HBox.margin>
-                                                <Insets left="15.0" />
-                                             </HBox.margin>
-                                          </ChoiceBox>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets left="10.0" top="20.0" />
-                                       </VBox.margin>
-                                    </HBox>
-                                    <HBox prefHeight="26.0" VBox.vgrow="NEVER">
-                                       <children>
-                                          <Button fx:id="all_button_filter" mnemonicParsing="false" onAction="#onAllFilterClick" styleClass="button-regular" text="All">
-                                             <HBox.margin>
-                                                <Insets right="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                          <Button fx:id="checked_in_button_filter" mnemonicParsing="false" onAction="#onCheckedInFilterClick" styleClass="button-regular" text="Checked In">
-                                             <HBox.margin>
-                                                <Insets right="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                          <Button fx:id="checked_out_button_filter" mnemonicParsing="false" onAction="#onCheckedOutFilterClick" styleClass="button-regular" text="Checked Out" />
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets left="10.0" top="15.0" />
-                                       </VBox.margin>
-                                    </HBox>
                                     <TableView prefHeight="704.0" prefWidth="1370.0">
-                                      <columns>
-                                        <TableColumn prefWidth="75.0" text="C1" />
-                                        <TableColumn prefWidth="75.0" text="C2" />
-                                      </columns>
+                                       <columns>
+                                          <TableColumn prefWidth="75.0" text="C1" />
+                                          <TableColumn prefWidth="75.0" text="C2" />
+                                       </columns>
                                        <VBox.margin>
                                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                        </VBox.margin>
                                     </TableView>
                                  </children>
+                                 <BorderPane.margin>
+                                    <Insets left="15.0" right="20.0" top="15.0" />
+                                 </BorderPane.margin>
                               </VBox>
-                           </children>
-                           <BorderPane.margin>
-                              <Insets left="15.0" right="10.0" />
-                           </BorderPane.margin>
-                        </VBox>
-                     </center>
-                     <bottom>
-                        <VBox alignment="CENTER_LEFT" prefHeight="329.0" prefWidth="1435.0" styleClass="table_card" BorderPane.alignment="CENTER">
-                           <children>
-                              <Label fx:id="top10_label" text="Top 10 Performers - Highest Overtime This Month">
-                                 <VBox.margin>
-                                    <Insets left="10.0" top="15.0" />
-                                 </VBox.margin>
-                                 <font>
-                                    <Font name="System Bold" size="20.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="below_top10_label" style="-fx-text-fill: gray;" text="Employees who have worked the most overtime hours">
-                                 <VBox.margin>
-                                    <Insets left="10.0" />
-                                 </VBox.margin>
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                              <TableView prefHeight="704.0" prefWidth="1370.0">
-                                 <columns>
-                                    <TableColumn prefWidth="75.0" text="C1" />
-                                    <TableColumn prefWidth="75.0" text="C2" />
-                                 </columns>
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </VBox.margin>
-                              </TableView>
-                           </children>
-                           <BorderPane.margin>
-                              <Insets left="15.0" right="20.0" top="15.0" />
-                           </BorderPane.margin>
-                        </VBox>
-                     </bottom>
-                  </BorderPane>
+                           </bottom>
+                        </BorderPane>
+                     </children>
+                  </AnchorPane>
                </content>
-               <VBox.margin>
-                  <Insets top="15.0" />
-               </VBox.margin>
             </ScrollPane>
          </children>
       </VBox>

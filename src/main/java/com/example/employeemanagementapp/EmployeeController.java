@@ -15,9 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,7 +23,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HelloController {
+public class EmployeeController {
     @FXML
     private Button dashbroad_nav_button;
     @FXML
@@ -44,12 +42,9 @@ public class HelloController {
     private Button checked_out_button_filter;
 
     @FXML
-    private BorderPane app_borderpane;
+    private ScrollPane employee_main_scrollpane;
     @FXML
-    private BorderPane main_borderpane;
-    @FXML
-    private ScrollPane main_scrollpane;
-
+    private BorderPane employee_main_borderpane;
 
     @FXML
     private TextField employeeid;
@@ -118,7 +113,7 @@ public class HelloController {
 
     private final EmployeeRepository reposistory;
 
-    public HelloController() throws Exception {
+    public EmployeeController() throws Exception {
         reposistory = (EmployeeRepository) new EmployeeRepository()
                 .Mapper(new EmployeeMapper())
                 .DatabaseConnection(DatabaseConnection.getConnection())
@@ -128,46 +123,35 @@ public class HelloController {
     }
 
     private void initChoiceBox() {
-        List<String> languageList = new ArrayList<>();
-        languageList.add("EN");
-        languageList.add("VN");
-        languageList.add("JP");
-
-        List<String> itemList = new ArrayList<>();
-        itemList.add("All Departments");
-        itemList.add("Engineering");
-        itemList.add("Marketing");
-        itemList.add("Sales");
-        itemList.add("HR");
-
-        ObservableList<String> observableItemList = FXCollections.observableArrayList(itemList);
-        ObservableList<String> observableLanguageItemList = FXCollections.observableArrayList(languageList);
-
-        department_filter_box.setItems(observableItemList);
-        department_filter_box.setValue("All Departments");
-
-        language_choice_box.setItems(observableLanguageItemList);
-        language_choice_box.setValue(ApplicationLanguageSetter.getCurrentLanguage());
-
-        language_choice_box.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information");
-                    alert.setHeaderText("Switching language");
-                    alert.setContentText("Please open the app again!");
-                    alert.showAndWait();
-
-                    ApplicationLanguageSetter.setCurrentLanguage(newValue);
-
-                    System.out.println(newValue);
-                    System.exit(0);
-                });
+//        List<String> languageList = new ArrayList<>();
+//        languageList.add("EN");
+//        languageList.add("VN");
+//        languageList.add("JP");
+//
+//        ObservableList<String> observableLanguageItemList = FXCollections.observableArrayList(languageList);
+//
+//        language_choice_box.setItems(observableLanguageItemList);
+//        language_choice_box.setValue(ApplicationLanguageSetter.getCurrentLanguage());
+//
+//        language_choice_box.getSelectionModel()
+//                .selectedItemProperty()
+//                .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+//                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//                    alert.setTitle("Information");
+//                    alert.setHeaderText("Switching language");
+//                    alert.setContentText("Please open the app again!");
+//                    alert.showAndWait();
+//
+//                    ApplicationLanguageSetter.setCurrentLanguage(newValue);
+//
+//                    System.out.println(newValue);
+//                    System.exit(0);
+//                });
     }
 
     private void initButtonStyleClass() {
-        dashbroad_nav_button.getStyleClass().add("nav_button_select");
-        all_button_filter.getStyleClass().setAll("button-selected");
+//        dashbroad_nav_button.getStyleClass().add("nav_button_select");
+//        all_button_filter.getStyleClass().setAll("button-selected");
     }
 
     private void translateText() {
@@ -208,7 +192,7 @@ public class HelloController {
             translateText();
         }
 
-        main_scrollpane.sceneProperty().addListener((obs, oldScene, newScene) -> {
+        employee_main_scrollpane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 attachStageListener(newScene);
             }
@@ -230,7 +214,7 @@ public class HelloController {
     }
 
     private void changeBorderpaneSize(double newVal) {
-        main_borderpane.setPrefWidth(newVal - 234);
+        employee_main_borderpane.setPrefWidth(newVal - 234);
     }
 
     private Employee mapEmployee() {
@@ -247,25 +231,6 @@ public class HelloController {
                 .build();
 
         return employee;
-    }
-
-    @FXML
-    protected void onEmployeeNavButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("employee_management.fxml"));
-            Parent root = loader.load();
-            app_borderpane.setCenter(root);
-
-            if (root instanceof Region region) {
-                region.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-                region.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-                region.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-                region.prefWidthProperty().bind(app_borderpane.widthProperty());
-                region.prefHeightProperty().bind(app_borderpane.heightProperty());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
