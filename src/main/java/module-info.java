@@ -7,6 +7,7 @@ module com.example.employeemanagementapp {
     requires java.sql;
     requires javafx.base;
     requires javafx.graphics;
+    requires json;
 
     opens com.example.employeemanagementapp to javafx.fxml;
     exports com.example.employeemanagementapp;

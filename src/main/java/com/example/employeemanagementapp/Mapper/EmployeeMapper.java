@@ -20,6 +20,10 @@ public class EmployeeMapper implements RowMapper<Employee> {
                 .Department_id(resultSet.getInt("department_id"))
                 .Created_at(resultSet.getDate("created_at"))
                 .Updated_at(resultSet.getDate("updated_at"))
+                .Total_hours_month(resultSet.getDouble("total_hours_month"))
+                .Bonus_hours_month(resultSet.getDouble("bonus_hours_month"))
+                .Monthly_salary(resultSet.getDouble("monthly_salary"))
+                .Project_bonus_month(resultSet.getDouble("project_bonus_month"))
                 .build();
 
         return employee;

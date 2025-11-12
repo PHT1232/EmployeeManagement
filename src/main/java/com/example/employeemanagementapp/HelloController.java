@@ -4,7 +4,8 @@ import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
 import com.example.employeemanagementapp.Repositories.EmployeeRepository;
-import com.example.employeemanagementapp.Repositories.Reposistory;
+import com.example.employeemanagementapp.Translators.Translator;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,15 +27,27 @@ public class HelloController {
     @FXML
     private Button dashbroad_nav_button;
     @FXML
+    private Button wages_nav_button;
+    @FXML
+    private Button project_nav_button;
+    @FXML
+    private Button employees_nav_button;
+    @FXML
+    private Button payment_nav_button;
+    @FXML
     private Button all_button_filter;
     @FXML
     private Button checked_in_button_filter;
     @FXML
     private Button checked_out_button_filter;
+
+
     @FXML
     private BorderPane main_borderpane;
     @FXML
     private ScrollPane main_scrollpane;
+
+
     @FXML
     private TextField employeeid;
     @FXML
@@ -50,11 +63,55 @@ public class HelloController {
     @FXML
     private TextField salary;
     @FXML
-    private DatePicker hire_date;
-    @FXML
     private TextField department_id;
+
+
     @FXML
     private ChoiceBox<String> department_filter_box;
+    @FXML
+    private ChoiceBox<String> language_choice_box;
+
+
+    @FXML
+    private DatePicker hire_date;
+
+
+    @FXML
+    private Label header_title_label;
+    @FXML
+    private Label main_header_label;
+    @FXML
+    private Label main_date_label;
+    @FXML
+    private Label first_card_label;
+    @FXML
+    private Label active_label;
+    @FXML
+    private Label current_present_label;
+    @FXML
+    private Label left_for_today_label;
+    @FXML
+    private Label today_attendance_label;
+    @FXML
+    private Label second_card_label;
+    @FXML
+    private Label third_card_label;
+    @FXML
+    private Label fouth_card_label;
+    @FXML
+    private Label employee_status_label;
+    @FXML
+    private Label real_time_label;
+    @FXML
+    private Label recent_activity_label;
+    @FXML
+    private Label latest_checkin_out_event_label;
+    @FXML
+    private Label top10_label;
+    @FXML
+    private Label below_top10_label;
+
+    private Translator translator = ApplicationLanguageSetter.getTranslator();
 
     private final EmployeeRepository reposistory;
 
@@ -63,9 +120,16 @@ public class HelloController {
                 .Mapper(new EmployeeMapper())
                 .DatabaseConnection(DatabaseConnection.getConnection())
                 .TableName("Employees").build();
+
+
     }
 
     private void initChoiceBox() {
+        List<String> languageList = new ArrayList<>();
+        languageList.add("EN");
+        languageList.add("VN");
+        languageList.add("JP");
+
         List<String> itemList = new ArrayList<>();
         itemList.add("All Departments");
         itemList.add("Engineering");
@@ -74,9 +138,28 @@ public class HelloController {
         itemList.add("HR");
 
         ObservableList<String> observableItemList = FXCollections.observableArrayList(itemList);
+        ObservableList<String> observableLanguageItemList = FXCollections.observableArrayList(languageList);
 
         department_filter_box.setItems(observableItemList);
         department_filter_box.setValue("All Departments");
+
+        language_choice_box.setItems(observableLanguageItemList);
+        language_choice_box.setValue(ApplicationLanguageSetter.getCurrentLanguage());
+
+        language_choice_box.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText("Switching language");
+                    alert.setContentText("Please open the app again!");
+                    alert.showAndWait();
+
+                    ApplicationLanguageSetter.setCurrentLanguage(newValue);
+
+                    System.out.println(newValue);
+                    System.exit(0);
+                });
     }
 
     private void initButtonStyleClass() {
@@ -84,10 +167,43 @@ public class HelloController {
         all_button_filter.getStyleClass().setAll("button-selected");
     }
 
+    private void translateText() {
+        main_header_label.setText(translator.translate(main_header_label.getText()));
+        header_title_label.setText(translator.translate(header_title_label.getText()));
+        main_date_label.setText(translator.translate(main_date_label.getText()));
+        first_card_label.setText(translator.translate(first_card_label.getText()));
+        active_label.setText(translator.translate(active_label.getText()));
+        current_present_label.setText(translator.translate(current_present_label.getText()));
+        left_for_today_label.setText(translator.translate(left_for_today_label.getText()));
+        today_attendance_label.setText(translator.translate(today_attendance_label.getText()));
+        second_card_label.setText(translator.translate(second_card_label.getText()));
+        third_card_label.setText(translator.translate(third_card_label.getText()));
+        fouth_card_label.setText(translator.translate(fouth_card_label.getText()));
+        employee_status_label.setText(translator.translate(employee_status_label.getText()));
+        real_time_label.setText(translator.translate(real_time_label.getText()));
+        recent_activity_label.setText(translator.translate(recent_activity_label.getText()));
+        latest_checkin_out_event_label.setText(translator.translate(latest_checkin_out_event_label.getText()));
+        top10_label.setText(translator.translate(top10_label.getText()));
+        below_top10_label.setText(translator.translate(below_top10_label.getText()));
+
+        all_button_filter.setText(translator.translate(all_button_filter.getText()));
+        checked_in_button_filter.setText(translator.translate(checked_in_button_filter.getText()));
+        checked_out_button_filter.setText(translator.translate(checked_out_button_filter.getText()));
+        dashbroad_nav_button.setText(translator.translate(dashbroad_nav_button.getText()));
+        wages_nav_button.setText(translator.translate(wages_nav_button.getText()));
+        project_nav_button.setText(translator.translate(project_nav_button.getText()));
+        employees_nav_button.setText(translator.translate(employees_nav_button.getText()));
+        payment_nav_button.setText(translator.translate(payment_nav_button.getText()));
+    }
+
     @FXML
     public void initialize() {
         initButtonStyleClass();
         initChoiceBox();
+
+        if (!ApplicationLanguageSetter.getCurrentLanguage().equals("EN")) {
+            translateText();
+        }
 
         main_scrollpane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {

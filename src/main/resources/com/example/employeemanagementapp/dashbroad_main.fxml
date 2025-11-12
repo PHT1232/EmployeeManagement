@@ -18,15 +18,25 @@
    <top>
       <VBox prefHeight="50.0" prefWidth="1492.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
          <children>
-            <Label text="DASHBOARD">
-               <font>
-                  <Font size="30.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin>
-            </Label>
             <Separator prefWidth="200.0" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="header_title_label" text="ADMIN DASHBOARD">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="100.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <ChoiceBox fx:id="language_choice_box" prefWidth="150.0" styleClass="button-regular">
+                           <HBox.margin>
+                              <Insets right="15.0" />
+                           </HBox.margin>
+                        </ChoiceBox>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
          </children>
       </VBox>
    </top>
@@ -37,22 +47,22 @@
                <VBox.margin>
                   <Insets top="20.0" />
                </VBox.margin></Button>
-            <Button mnemonicParsing="false" styleClass="nav_button" text="Wages &amp; KPI">
+            <Button fx:id="wages_nav_button" mnemonicParsing="false" styleClass="nav_button" text="Wages &amp; KPI">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" styleClass="nav_button" text="Projects">
+            <Button fx:id="project_nav_button" mnemonicParsing="false" styleClass="nav_button" text="Projects">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" styleClass="nav_button" text="Employees">
+            <Button fx:id="employees_nav_button" mnemonicParsing="false" styleClass="nav_button" text="Employees">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" styleClass="nav_button" text="Payment Distribution">
+            <Button fx:id="payment_nav_button" mnemonicParsing="false" styleClass="nav_button" text="Payment Distribution">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
@@ -65,7 +75,7 @@
          <children>
             <VBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="1270.0">
                <children>
-                  <Label text="Dashboard">
+                  <Label fx:id="main_header_label" text="Dashboard">
                      <font>
                         <Font name="System Bold" size="30.0" />
                      </font>
@@ -73,7 +83,7 @@
                         <Insets left="15.0" />
                      </VBox.margin>
                   </Label>
-                  <Label style="-fx-text-fill: gray;" text="Tuesday, November 11, 2025">
+                  <Label fx:id="main_date_label" style="-fx-text-fill: gray;" text="Tuesday, November 11, 2025">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -90,7 +100,7 @@
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0" styleClass="card">
                      <children>
-                        <Label text="Total Employees">
+                        <Label fx:id="first_card_label" text="Total Employees">
                            <font>
                               <Font size="30.0" />
                            </font>
@@ -106,7 +116,7 @@
                               <Insets left="15.0" top="20.0" />
                            </VBox.margin>
                         </Label>
-                        <Label style="-fx-text-fill: gray;" text="Active accounts">
+                        <Label fx:id="active_label" style="-fx-text-fill: gray;" text="Active accounts">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -121,7 +131,7 @@
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" styleClass="card">
                      <children>
-                        <Label text="Checked In">
+                        <Label fx:id="second_card_label" text="Checked In">
                            <font>
                               <Font size="30.0" />
                            </font>
@@ -137,7 +147,7 @@
                               <Insets left="15.0" top="20.0" />
                            </VBox.margin>
                         </Label>
-                        <Label style="-fx-text-fill: gray;" text="Currently present">
+                        <Label fx:id="current_present_label" style="-fx-text-fill: gray;" text="Currently present">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -152,7 +162,7 @@
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" styleClass="card">
                      <children>
-                        <Label text="Checked Out">
+                        <Label fx:id="third_card_label" text="Checked Out">
                            <font>
                               <Font size="30.0" />
                            </font>
@@ -168,7 +178,7 @@
                               <Insets left="15.0" top="20.0" />
                            </VBox.margin>
                         </Label>
-                        <Label style="-fx-text-fill: gray;" text="Left for today">
+                        <Label fx:id="left_for_today_label" style="-fx-text-fill: gray;" text="Left for today">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -186,7 +196,7 @@
                         <Insets left="20.0" />
                      </HBox.margin>
                      <children>
-                        <Label text="Attendance Rate">
+                        <Label fx:id="fouth_card_label" text="Attendance Rate">
                            <font>
                               <Font size="30.0" />
                            </font>
@@ -202,7 +212,7 @@
                               <Insets left="15.0" top="20.0" />
                            </VBox.margin>
                         </Label>
-                        <Label style="-fx-text-fill: gray;" text="Today's attendance">
+                        <Label fx:id="today_attendance_label" style="-fx-text-fill: gray;" text="Today's attendance">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -225,7 +235,7 @@
                            <children>
                               <VBox style="-fx-border-radius: 10; -fx-background-radius: 10;">
                                  <children>
-                                    <Label text="Recent Activity">
+                                    <Label fx:id="recent_activity_label" text="Recent Activity">
                                        <font>
                                           <Font name="System Bold" size="25.0" />
                                        </font>
@@ -233,7 +243,7 @@
                                           <Insets left="15.0" top="15.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <Label style="-fx-text-fill: gray;" text="Latest check-in/out events">
+                                    <Label fx:id="latest_checkin_out_event_label" style="-fx-text-fill: gray;" text="Latest check-in/out events">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
@@ -270,7 +280,7 @@
                                           </VBox>
                                        </content>
                                        <VBox.margin>
-                                          <Insets left="15.0" right="15.0" />
+                                          <Insets left="15.0" right="15.0" top="15.0" />
                                        </VBox.margin>
                                     </ScrollPane>
                                  </children>
@@ -286,7 +296,7 @@
                            <children>
                               <VBox>
                                  <children>
-                                    <Label text="Employee Status">
+                                    <Label fx:id="employee_status_label" text="Employee Status">
                                        <VBox.margin>
                                           <Insets left="10.0" top="15.0" />
                                        </VBox.margin>
@@ -294,7 +304,7 @@
                                           <Font name="System Bold" size="20.0" />
                                        </font>
                                     </Label>
-                                    <Label style="-fx-text-fill: gray;" text="Real-time check-in/check-out status">
+                                    <Label fx:id="real_time_label" style="-fx-text-fill: gray;" text="Real-time check-in/check-out status">
                                        <VBox.margin>
                                           <Insets left="10.0" />
                                        </VBox.margin>
@@ -353,7 +363,7 @@
                      <bottom>
                         <VBox alignment="CENTER_LEFT" prefHeight="329.0" prefWidth="1435.0" styleClass="table_card" BorderPane.alignment="CENTER">
                            <children>
-                              <Label text="Top 10 Performers - Highest Overtime This Month">
+                              <Label fx:id="top10_label" text="Top 10 Performers - Highest Overtime This Month">
                                  <VBox.margin>
                                     <Insets left="10.0" top="15.0" />
                                  </VBox.margin>
@@ -361,7 +371,7 @@
                                     <Font name="System Bold" size="20.0" />
                                  </font>
                               </Label>
-                              <Label style="-fx-text-fill: gray;" text="Employees who have worked the most overtime hours">
+                              <Label fx:id="below_top10_label" style="-fx-text-fill: gray;" text="Employees who have worked the most overtime hours">
                                  <VBox.margin>
                                     <Insets left="10.0" />
                                  </VBox.margin>

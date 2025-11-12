@@ -1,0 +1,16 @@
+{
+  "Dashboard": "ダッシュボード",
+  "Employees": "従業員",
+  "Employee": "従業員",
+  "Total Employees": "従業員総数",
+  "Checked In": "出勤",
+  "Checked Out": "退勤",
+  "Attendance Rate": "出勤率",
+  "Real-time check-in/check-out status": "リアルタイム出退勤状況",
+  "Recent Activity": "最近の活動",
+  "Latest check-in/out events": "最新の出退勤イベント",
+  "Employee Status": "従業員の状況",
+  "All": "すべて",
+  "Top 10 Performers - Highest Overtime This Month": "今月の残業時間トップ10従業員",
+  "Employees who have worked the most overtime hours": "最も残業時間が多い従業員"
+}
