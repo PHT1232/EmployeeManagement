@@ -118,6 +118,19 @@ public class Reposistory<T> {
         return list;
     }
 
+    public List<T> fetchPagination(int numOfRow, int offset) throws Exception {
+        List<T> list = new ArrayList<>();
+        String sql = "SELECT * FROM " + tableName + " LIMIT " + numOfRow + " OFFSET " + offset;
+
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql)) {
+            while (rs.next()) {
+                list.add(rowMapper.mapRow(rs));
+            }
+        }
+
+        return list;
+    }
+
     public int update(T entity) throws Exception {
         try (PreparedStatement statement = preparedUpdateStatement(entity)) {
             return statement.executeUpdate();

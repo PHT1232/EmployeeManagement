@@ -8,6 +8,7 @@ module com.example.employeemanagementapp {
     requires javafx.base;
     requires javafx.graphics;
     requires json;
+    requires com.example.employeemanagementapp;
 
     opens com.example.employeemanagementapp to javafx.fxml;
     exports com.example.employeemanagementapp;

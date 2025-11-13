@@ -16,6 +16,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -42,9 +44,9 @@ public class EmployeeController {
     private Button checked_out_button_filter;
 
     @FXML
-    private ScrollPane employee_main_scrollpane;
+    private ScrollPane main_scrollpane;
     @FXML
-    private BorderPane employee_main_borderpane;
+    private BorderPane main_borderpane;
 
     @FXML
     private TextField employeeid;
@@ -75,8 +77,6 @@ public class EmployeeController {
 
 
     @FXML
-    private Label header_title_label;
-    @FXML
     private Label main_header_label;
     @FXML
     private Label main_date_label;
@@ -99,13 +99,7 @@ public class EmployeeController {
     @FXML
     private Label employee_status_label;
     @FXML
-    private Label real_time_label;
-    @FXML
-    private Label recent_activity_label;
-    @FXML
-    private Label latest_checkin_out_event_label;
-    @FXML
-    private Label top10_label;
+    private Label select_department_label;
     @FXML
     private Label below_top10_label;
 
@@ -155,32 +149,41 @@ public class EmployeeController {
     }
 
     private void translateText() {
+        main_header_label.setFont(new Font("Noto Sans CJK JP", main_header_label.getFont().getSize()));
         main_header_label.setText(translator.translate(main_header_label.getText()));
-        header_title_label.setText(translator.translate(header_title_label.getText()));
-        main_date_label.setText(translator.translate(main_date_label.getText()));
-        first_card_label.setText(translator.translate(first_card_label.getText()));
-        active_label.setText(translator.translate(active_label.getText()));
-        current_present_label.setText(translator.translate(current_present_label.getText()));
-        left_for_today_label.setText(translator.translate(left_for_today_label.getText()));
-        today_attendance_label.setText(translator.translate(today_attendance_label.getText()));
-        second_card_label.setText(translator.translate(second_card_label.getText()));
-        third_card_label.setText(translator.translate(third_card_label.getText()));
-        fouth_card_label.setText(translator.translate(fouth_card_label.getText()));
-        employee_status_label.setText(translator.translate(employee_status_label.getText()));
-        real_time_label.setText(translator.translate(real_time_label.getText()));
-        recent_activity_label.setText(translator.translate(recent_activity_label.getText()));
-        latest_checkin_out_event_label.setText(translator.translate(latest_checkin_out_event_label.getText()));
-        top10_label.setText(translator.translate(top10_label.getText()));
-        below_top10_label.setText(translator.translate(below_top10_label.getText()));
 
-        all_button_filter.setText(translator.translate(all_button_filter.getText()));
-        checked_in_button_filter.setText(translator.translate(checked_in_button_filter.getText()));
-        checked_out_button_filter.setText(translator.translate(checked_out_button_filter.getText()));
-        dashbroad_nav_button.setText(translator.translate(dashbroad_nav_button.getText()));
-        wages_nav_button.setText(translator.translate(wages_nav_button.getText()));
-        project_nav_button.setText(translator.translate(project_nav_button.getText()));
-        employees_nav_button.setText(translator.translate(employees_nav_button.getText()));
-        payment_nav_button.setText(translator.translate(payment_nav_button.getText()));
+        main_date_label.setFont(new Font("Noto Sans CJK JP", main_date_label.getFont().getSize()));
+        main_date_label.setText(translator.translate(main_date_label.getText()));
+
+        first_card_label.setFont(new Font("Noto Sans CJK JP", first_card_label.getFont().getSize()));
+        first_card_label.setText(translator.translate(first_card_label.getText()));
+
+        active_label.setFont(new Font("Noto Sans CJK JP", active_label.getFont().getSize()));
+        active_label.setText(translator.translate(active_label.getText()));
+
+        current_present_label.setFont(new Font("Noto Sans CJK JP", current_present_label.getFont().getSize()));
+        current_present_label.setText(translator.translate(current_present_label.getText()));
+
+        left_for_today_label.setFont(new Font("Noto Sans CJK JP", left_for_today_label.getFont().getSize()));
+        left_for_today_label.setText(translator.translate(left_for_today_label.getText()));
+
+        today_attendance_label.setFont(new Font("Noto Sans CJK JP", today_attendance_label.getFont().getSize()));
+        today_attendance_label.setText(translator.translate(today_attendance_label.getText()));
+
+        second_card_label.setFont(new Font("Noto Sans CJK JP", second_card_label.getFont().getSize()));
+        second_card_label.setText(translator.translate(second_card_label.getText()));
+
+        third_card_label.setFont(new Font("Noto Sans CJK JP", third_card_label.getFont().getSize()));
+        third_card_label.setText(translator.translate(third_card_label.getText()));
+
+        fouth_card_label.setFont(new Font("Noto Sans CJK JP", fouth_card_label.getFont().getSize()));
+        fouth_card_label.setText(translator.translate(fouth_card_label.getText()));
+
+        employee_status_label.setFont(new Font("Noto Sans CJK JP", employee_status_label.getFont().getSize()));
+        employee_status_label.setText(translator.translate(employee_status_label.getText()));
+
+        below_top10_label.setFont(new Font("Noto Sans CJK JP", below_top10_label.getFont().getSize()));
+        below_top10_label.setText(translator.translate(below_top10_label.getText()));
     }
 
     @FXML
@@ -192,29 +195,7 @@ public class EmployeeController {
             translateText();
         }
 
-        employee_main_scrollpane.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                attachStageListener(newScene);
-            }
-        });
-    }
-
-    private void attachStageListener(Scene scene) {
-        scene.windowProperty().addListener((obs, oldWindow, newWindow) -> {
-            if (newWindow instanceof Stage stage) {
-                stage.setOnShown(event -> onStageShown(stage));
-            }
-        });
-    }
-
-    private void onStageShown(Stage stage) {
-        stage.widthProperty().addListener((o, oldVal, newVal) -> {
-            changeBorderpaneSize(newVal.doubleValue());
-        });
-    }
-
-    private void changeBorderpaneSize(double newVal) {
-        employee_main_borderpane.setPrefWidth(newVal - 234);
+        main_scrollpane.setFitToWidth(true);
     }
 
     private Employee mapEmployee() {
@@ -251,6 +232,22 @@ public class EmployeeController {
             currentStage.close();
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    protected void openAddEmployeeModal(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("add_employee.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
