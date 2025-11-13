@@ -31,7 +31,7 @@ public class PaginationServiceImpl<T> implements PaginationService<T>{
             int start = (page - 1) * numOfRows;
             int end = Math.min(start + numOfRows, inMemoryList.size());
 
-            returnList.addAll(inMemoryList);
+            returnList.addAll(inMemoryList.subList(start, end));
         }
 
         return returnList;

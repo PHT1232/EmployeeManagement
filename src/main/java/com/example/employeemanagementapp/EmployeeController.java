@@ -1,9 +1,11 @@
 package com.example.employeemanagementapp;
 
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
+import com.example.employeemanagementapp.Entities.Departments;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
 import com.example.employeemanagementapp.Repositories.EmployeeRepository;
+import com.example.employeemanagementapp.Service.DepartmentService;
 import com.example.employeemanagementapp.Translators.Translator;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -103,6 +105,8 @@ public class EmployeeController {
     @FXML
     private Label below_top10_label;
 
+    private DepartmentService departmentService;
+
     private Translator translator = ApplicationLanguageSetter.getTranslator();
 
     private final EmployeeRepository reposistory;
@@ -113,7 +117,7 @@ public class EmployeeController {
                 .DatabaseConnection(DatabaseConnection.getConnection())
                 .TableName("Employees").build();
 
-
+        departmentService = new DepartmentService();
     }
 
     private void initChoiceBox() {
@@ -195,7 +199,43 @@ public class EmployeeController {
             translateText();
         }
 
+
+        try {
+            departmentService.fetchList(10, 1).forEach(System.out::println);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         main_scrollpane.setFitToWidth(true);
+    }
+
+    int currentDepartmentPage = 1;
+
+    private List<Departments> list = new ArrayList<>();
+
+    private void manipulateList(int page) {
+        try {
+            list = departmentService.fetchList(10, page);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    protected void prevDepartment() {
+        currentDepartmentPage--;
+        manipulateList(currentDepartmentPage);
+        for (Departments departments : list) {
+            System.out.println(departments.getDepartment_name());
+        }
+    }
+
+    @FXML
+    protected void nextDepartment() {
+        currentDepartmentPage++;
+        manipulateList(currentDepartmentPage);
+        for (Departments departments : list) {
+            System.out.println(departments.getDepartment_name());
+        }
     }
 
     private Employee mapEmployee() {
