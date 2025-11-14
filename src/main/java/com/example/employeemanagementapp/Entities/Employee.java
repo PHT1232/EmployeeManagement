@@ -11,7 +11,6 @@ public class Employee {
     private String position;
     private double salary;
     private Date hire_date;
-    private int department_id;
     private Date created_at;
     private Date updated_at;
     private double total_hours_month;
@@ -28,7 +27,6 @@ public class Employee {
       position = builder.position;
       salary = builder.salary;
       hire_date = builder.hire_date;
-      department_id = builder.department_id;
       created_at = builder.created_at;
       updated_at = builder.updated_at;
       total_hours_month = builder.total_hours_month;
@@ -46,7 +44,6 @@ public class Employee {
       private String position;
       private double salary;
       private Date hire_date;
-      private int department_id;
       private Date created_at;
       private Date updated_at;
       private double total_hours_month;
@@ -91,11 +88,6 @@ public class Employee {
 
       public Builder Hire_date(Date hire_date) {
           this.hire_date = hire_date;
-          return this;
-      }
-
-      public Builder Department_id(int department_id) {
-          this.department_id = department_id;
           return this;
       }
 
@@ -230,14 +222,6 @@ public class Employee {
         this.hire_date = hire_date;
     }
 
-    public int getDepartment_id() {
-        return department_id;
-    }
-
-    public void setDepartment_id(int department_id) {
-        this.department_id = department_id;
-    }
-
     public Date getCreated_at() {
         return created_at;
     }
@@ -265,7 +249,6 @@ public class Employee {
                 ", position='" + position + '\'' +
                 ", salary=" + salary +
                 ", hire_date=" + hire_date +
-                ", department_id=" + department_id +
                 ", created_at=" + created_at +
                 ", updated_at=" + updated_at +
                 '}';

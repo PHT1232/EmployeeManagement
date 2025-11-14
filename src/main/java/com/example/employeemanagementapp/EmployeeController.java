@@ -4,9 +4,14 @@ import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Departments;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
+import com.example.employeemanagementapp.Models.DepartmentDisplay;
 import com.example.employeemanagementapp.Repositories.EmployeeRepository;
 import com.example.employeemanagementapp.Service.DepartmentService;
+import com.example.employeemanagementapp.Service.EmployeeService;
 import com.example.employeemanagementapp.Translators.Translator;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +22,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -105,11 +111,20 @@ public class EmployeeController {
     @FXML
     private Label below_top10_label;
 
+    @FXML
+    private TableView employee_table;
+    @FXML
+    private TableView department_table;
+
     private DepartmentService departmentService;
 
     private Translator translator = ApplicationLanguageSetter.getTranslator();
 
+    private EmployeeService employeeService;
+
     private final EmployeeRepository reposistory;
+
+    private int currentEmployeePage = 1;
 
     public EmployeeController() throws Exception {
         reposistory = (EmployeeRepository) new EmployeeRepository()
@@ -118,38 +133,7 @@ public class EmployeeController {
                 .TableName("Employees").build();
 
         departmentService = new DepartmentService();
-    }
-
-    private void initChoiceBox() {
-//        List<String> languageList = new ArrayList<>();
-//        languageList.add("EN");
-//        languageList.add("VN");
-//        languageList.add("JP");
-//
-//        ObservableList<String> observableLanguageItemList = FXCollections.observableArrayList(languageList);
-//
-//        language_choice_box.setItems(observableLanguageItemList);
-//        language_choice_box.setValue(ApplicationLanguageSetter.getCurrentLanguage());
-//
-//        language_choice_box.getSelectionModel()
-//                .selectedItemProperty()
-//                .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-//                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                    alert.setTitle("Information");
-//                    alert.setHeaderText("Switching language");
-//                    alert.setContentText("Please open the app again!");
-//                    alert.showAndWait();
-//
-//                    ApplicationLanguageSetter.setCurrentLanguage(newValue);
-//
-//                    System.out.println(newValue);
-//                    System.exit(0);
-//                });
-    }
-
-    private void initButtonStyleClass() {
-//        dashbroad_nav_button.getStyleClass().add("nav_button_select");
-//        all_button_filter.getStyleClass().setAll("button-selected");
+        employeeService = new EmployeeService();
     }
 
     private void translateText() {
@@ -190,21 +174,56 @@ public class EmployeeController {
         below_top10_label.setText(translator.translate(below_top10_label.getText()));
     }
 
+    private void populateEmployeeTable() throws Exception {
+        ObservableList<Employee> employees = FXCollections.observableArrayList(employeeService.fetchList(10, currentEmployeePage));
+        employee_table.setItems(employees);
+    }
+
+    private void populateDepartmentTable() throws Exception {
+        ObservableList<DepartmentDisplay> departments = FXCollections.observableArrayList(departmentService.fetchListWithEmployeeName(10, currentDepartmentPage));
+        department_table.setItems(departments);
+    }
+
     @FXML
     public void initialize() {
-        initButtonStyleClass();
-        initChoiceBox();
-
         if (!ApplicationLanguageSetter.getCurrentLanguage().equals("EN")) {
             translateText();
         }
 
-
         try {
-            departmentService.fetchList(10, 1).forEach(System.out::println);
+            TableColumn<DepartmentDisplay, Integer> idCol = new TableColumn<>("Id");
+
+            TableColumn<DepartmentDisplay, String> nameCol = new TableColumn<>("Name");
+
+            TableColumn<DepartmentDisplay, String> managerCol = new TableColumn<>("Manager");
+
+            TableColumn<DepartmentDisplay, Date> createdAtCol = new TableColumn<>("Created At");
+
+            TableColumn<DepartmentDisplay, Date> updatedAtCol = new TableColumn<>("Updated At");
+
+            idCol.setCellValueFactory(cellData ->
+                    new SimpleIntegerProperty(cellData.getValue().getDepartment_id()).asObject());
+
+            nameCol.setCellValueFactory(cellData ->
+                    new SimpleStringProperty(cellData.getValue().getDepartment_name()));
+
+            managerCol.setCellValueFactory(cellData ->
+                    new SimpleStringProperty(cellData.getValue().getManager()));
+
+            createdAtCol.setCellValueFactory(cellData ->
+                    new SimpleObjectProperty<>(cellData.getValue().getCreated_at()));
+
+            updatedAtCol.setCellValueFactory(cellData ->
+                    new SimpleObjectProperty<>(cellData.getValue().getUpdated_at()));
+
+
+            department_table.getColumns().addAll(idCol, nameCol, managerCol, createdAtCol, updatedAtCol);
+            department_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+            populateDepartmentTable();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
         main_scrollpane.setFitToWidth(true);
     }
 
@@ -223,35 +242,23 @@ public class EmployeeController {
     @FXML
     protected void prevDepartment() {
         currentDepartmentPage--;
-        manipulateList(currentDepartmentPage);
-        for (Departments departments : list) {
-            System.out.println(departments.getDepartment_name());
+        try {
+            if (currentDepartmentPage != 0) {
+                populateDepartmentTable();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @FXML
     protected void nextDepartment() {
         currentDepartmentPage++;
-        manipulateList(currentDepartmentPage);
-        for (Departments departments : list) {
-            System.out.println(departments.getDepartment_name());
+        try {
+            populateDepartmentTable();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-    }
-
-    private Employee mapEmployee() {
-        Employee employee = new Employee.Builder()
-                .Employee_id(Integer.parseInt(employeeid.getText()))
-                .First_name(first_name.getText())
-                .Last_name(last_name.getText())
-                .Email(email.getText())
-                .Phone(phone.getText())
-                .Position(position.getText())
-                .Salary(Double.parseDouble(salary.getText()))
-                .Hire_date(Date.valueOf(hire_date.getValue()))
-                .Department_id(Integer.parseInt(department_id.getText()))
-                .build();
-
-        return employee;
     }
 
     @FXML
@@ -310,44 +317,5 @@ public class EmployeeController {
         all_button_filter.getStyleClass().setAll("button-regular");
         checked_in_button_filter.getStyleClass().setAll("button-regular");
         checked_out_button_filter.getStyleClass().setAll("button-selected");
-    }
-    @FXML
-    protected void onUpdateButtonClick() {
-        try {
-
-            reposistory.update(mapEmployee());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @FXML
-    protected void onListAllButtonClick() {
-        try {
-            reposistory.findAll().forEach(System.out::println);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @FXML
-    protected void onHelloButtonClick() {
-        try {
-            reposistory.insert(mapEmployee());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @FXML
-    protected void onDeleteButtonClick() {
-        try {
-            Employee employee = new Employee.Builder().build();
-            employee.setEmployee_id(Integer.parseInt(employeeid.getText()));
-
-            reposistory.delete(employee);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 }

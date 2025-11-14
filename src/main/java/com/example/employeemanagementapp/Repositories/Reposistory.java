@@ -1,5 +1,6 @@
 package com.example.employeemanagementapp.Repositories;
 
+import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Entities.Projects;
 import com.example.employeemanagementapp.Mapper.RowMapper;
 
@@ -116,6 +117,19 @@ public class Reposistory<T> {
         }
 
         return list;
+    }
+
+    public T findById(int id, String idField) throws Exception {
+        T employee = null;
+        String sql = "SELECT * FROM " + tableName + " WHERE " + idField + " = " + id;
+
+        try (Statement statement = connection.createStatement();ResultSet rs = statement.executeQuery(sql)) {
+            while (rs.next()) {
+                employee = rowMapper.mapRow(rs);
+            }
+        }
+
+        return employee;
     }
 
     public List<T> fetchPagination(int numOfRow, int offset) throws Exception {

@@ -269,7 +269,6 @@ public class HelloController {
                 .Position(position.getText())
                 .Salary(Double.parseDouble(salary.getText()))
                 .Hire_date(Date.valueOf(hire_date.getValue()))
-                .Department_id(Integer.parseInt(department_id.getText()))
                 .build();
 
         return employee;

@@ -17,7 +17,6 @@ public class EmployeeMapper implements RowMapper<Employee> {
                 .Position(resultSet.getString("position"))
                 .Salary(resultSet.getDouble("salary"))
                 .Hire_date(resultSet.getDate("hire_date"))
-                .Department_id(resultSet.getInt("department_id"))
                 .Created_at(resultSet.getDate("created_at"))
                 .Updated_at(resultSet.getDate("updated_at"))
                 .Total_hours_month(resultSet.getDouble("total_hours_month"))

@@ -1,8 +1,10 @@
 package com.example.employeemanagementapp;
 
+import com.example.employeemanagementapp.Entities.DepartmentAssignments;
 import com.example.employeemanagementapp.Entities.Departments;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Service.DepartmentService;
+import com.example.employeemanagementapp.Service.EmployeeService;
 import com.example.employeemanagementapp.Translators.Translator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,7 +12,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import org.controlsfx.control.PropertySheet;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddEmployeeController {
     @FXML
@@ -85,20 +92,19 @@ public class AddEmployeeController {
     @FXML
     private Label start_date_error;
 
-    @FXML
-    private Label departments_label;
-
-    @FXML
-    private ComboBox<Departments> departments_combobox;
-
-    private Departments selectedDepartment;
+    private Departments selectedDepartment = new Departments.Builder().build();
 
     private Translator translator = ApplicationLanguageSetter.getTranslator();
 
     private DepartmentService departmentService;
 
+    private EmployeeService employeeService;
+
+    private int currentDepartmentPage = 1;
+
     public AddEmployeeController() throws Exception {
         departmentService = new DepartmentService();
+        employeeService = new EmployeeService();
     }
 
     @FXML
@@ -108,31 +114,6 @@ public class AddEmployeeController {
         }
 
         forceTextFieldToNumber();
-        initCombobox();
-    }
-
-    private void initCombobox() {
-        ObservableList<Departments> items = FXCollections.observableArrayList(
-                new Departments.Builder().Department_id(1).Department_name("phat").build(),
-                new Departments.Builder().Department_id(2).Department_name("Engineering").build());
-
-        departments_combobox.setItems(items);
-
-        // Add listener to editor
-        departments_combobox.getEditor().textProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal == null || newVal.isEmpty()) {
-                departments_combobox.setItems(items);
-            } else {
-                ObservableList<Departments> filtered = FXCollections.observableArrayList();
-                for (Departments item : items) {
-                    if (item.getDepartment_name().startsWith(newVal.toLowerCase())) {
-                        filtered.add(item);
-                    }
-                }
-                departments_combobox.setItems(filtered);
-                departments_combobox.show();
-            }
-        });
     }
 
     private void forceTextFieldToNumber() {
@@ -178,9 +159,6 @@ public class AddEmployeeController {
 
         position_label.setFont(new Font("Noto Sans CJK JP", position_label.getFont().getSize()));
         position_label.setText(translator.translate(position_label.getText()));
-
-        departments_label.setFont(new Font("Noto Sans CJK JP", departments_label.getFont().getSize()));
-        departments_label.setText(translator.translate(departments_label.getText()));
 
         save_button.setText(translator.translate(save_button.getText()));
     }
@@ -234,22 +212,25 @@ public class AddEmployeeController {
                 .Email(email_input.getText())
                 .Phone(phone_input.getText())
                 .Position(position_input.getText())
-                .Department_id(selectedDepartment.getDepartment_id())
+                .Salary(Double.parseDouble(salary_input.getText()))
+                .Hire_date(Date.valueOf(startdatepicker.getValue()))
                 .build();
 
         return employee;
     }
 
     @FXML
-    protected void onDepartmentSelected(ActionEvent event) {
-        selectedDepartment = departments_combobox.getSelectionModel().getSelectedItem();
-    }
-
-    @FXML
     protected void saveEmployeeToDatabase() {
         displayErrorMessage();
         try {
-            System.out.println(departmentService.fetchList(10, 1));
+            if (validateInput()) {
+                Employee employee = buildEmployee();
+                if (employeeService.addEmployee(employee)>0) {
+                    Stage stage = (Stage) save_button.getScene().getWindow();
+
+                    stage.close();
+                }
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

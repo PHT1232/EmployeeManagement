@@ -92,4 +92,9 @@ public class Departments {
     public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
     }
+
+    @Override
+    public String toString() {
+        return department_name;
+    }
 }

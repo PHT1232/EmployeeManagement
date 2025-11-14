@@ -5,8 +5,13 @@ public class DepartmentAssignments {
     private int employee_id;
 
     public DepartmentAssignments() {
+
     }
-    
+
+    public DepartmentAssignments(int department_id, int employee_id) {
+        this.department_id = department_id;
+        this.employee_id = employee_id;
+    }
 
     public int getDepartment_id() {
         return department_id;

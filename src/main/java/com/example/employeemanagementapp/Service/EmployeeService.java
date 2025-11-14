@@ -2,9 +2,12 @@ package com.example.employeemanagementapp.Service;
 
 import com.example.employeemanagementapp.Adapters.DatabaseObjectToMonthlyStatsAdapter;
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
+import com.example.employeemanagementapp.Entities.DepartmentAssignments;
+import com.example.employeemanagementapp.Entities.Departments;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
 import com.example.employeemanagementapp.Models.MonthlyStats;
+import com.example.employeemanagementapp.Repositories.DepartmentAssignmentRepository;
 import com.example.employeemanagementapp.Repositories.EmployeeRepository;
 import com.example.employeemanagementapp.Repositories.Reposistory;
 
@@ -19,14 +22,25 @@ import java.util.Map;
 
 public class EmployeeService {
     private static EmployeeRepository employeeReposistory;
+    private static DepartmentAssignmentRepository departmentAssignmentRepository;
+    private static PaginationService<Employee> paginationService ;
 
     public EmployeeService() throws Exception {
         employeeReposistory = (EmployeeRepository) new EmployeeRepository()
                 .Mapper(new EmployeeMapper())
                 .DatabaseConnection(DatabaseConnection.getConnection())
-                .TableName("Employees").build();
+                .TableName("employees").build();
+
+        departmentAssignmentRepository = (DepartmentAssignmentRepository) new DepartmentAssignmentRepository()
+                .DatabaseConnection(DatabaseConnection.getConnection())
+                .TableName("department_assignments").build();
+
+        paginationService = new PaginationServiceImpl<>(employeeReposistory);
     }
 
+    public List<Employee> fetchList(int numOfRows, int page) throws Exception {
+        return paginationService.fetchData(numOfRows, page);
+    }
 
     private List<MonthlyStats> fetchMonthlyData(Date monthStart, Date monthEnd) {
         List<MonthlyStats> list = new ArrayList<>();
@@ -39,6 +53,10 @@ public class EmployeeService {
         }
 
         return list;
+    }
+
+    public int addEmployee(Employee employee) throws Exception {
+        return employeeReposistory.insert(employee);
     }
 
     public void updateMonthlySalaries(List<MonthlyStats> list) throws Exception {

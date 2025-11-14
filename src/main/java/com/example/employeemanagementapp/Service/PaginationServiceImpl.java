@@ -20,18 +20,18 @@ public class PaginationServiceImpl<T> implements PaginationService<T>{
     @Override
     public List<T> fetchData(int numOfRows, int page) throws Exception {
         int currentNumberOfPageInList = inMemoryList.size() / numOfRows;
+        int offset = (page - 1) * numOfRows;
 
-        List<T> returnList = new ArrayList<>();
+        List<T> returnList;
 
-        if (page >= currentNumberOfPageInList) {
-            int offset = (page - 1) * numOfRows;
-
-            inMemoryList.addAll(fetchListFromDatabase(10, offset));
+        if (page > currentNumberOfPageInList) {
+            System.out.println("fetch from database");
+            returnList = fetchListFromDatabase(numOfRows, offset);
+            inMemoryList.addAll(fetchListFromDatabase(numOfRows, offset));
         } else {
-            int start = (page - 1) * numOfRows;
-            int end = Math.min(start + numOfRows, inMemoryList.size());
-
-            returnList.addAll(inMemoryList.subList(start, end));
+            System.out.println("fetch from memory");
+            int end = Math.min(offset + numOfRows, inMemoryList.size());
+            returnList = inMemoryList.subList(offset, end);
         }
 
         return returnList;
