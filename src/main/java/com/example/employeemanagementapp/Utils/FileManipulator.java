@@ -15,21 +15,19 @@ public class FileManipulator {
         }
     }
 
-    public static JSONObject readJsonObject(String fileName) {
+    public static JSONObject readJsonObjectFromFile(String fileName) {
         JSONObject obj;
         StringBuilder jsonString = new StringBuilder();
         String line;
+        File file = new File(HelloApplication.class.getResource(fileName).getFile());
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                HelloApplication.class.getResourceAsStream(fileName)
-        ))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             while ((line = reader.readLine()) != null) {
                jsonString.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         obj = new JSONObject(jsonString.toString());
 
         return obj;

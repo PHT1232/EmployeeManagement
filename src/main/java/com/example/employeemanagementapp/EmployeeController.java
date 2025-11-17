@@ -122,15 +122,9 @@ public class EmployeeController {
 
     private EmployeeService employeeService;
 
-    private final EmployeeRepository reposistory;
-
     private int currentEmployeePage = 1;
 
     public EmployeeController() throws Exception {
-        reposistory = (EmployeeRepository) new EmployeeRepository()
-                .Mapper(new EmployeeMapper())
-                .DatabaseConnection(DatabaseConnection.getConnection())
-                .TableName("Employees").build();
 
         departmentService = new DepartmentService();
         employeeService = new EmployeeService();
@@ -191,35 +185,89 @@ public class EmployeeController {
         }
 
         try {
-            TableColumn<DepartmentDisplay, Integer> idCol = new TableColumn<>("Id");
+            Thread departMentThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        TableColumn<DepartmentDisplay, Integer> idCol = new TableColumn<>("Id");
 
-            TableColumn<DepartmentDisplay, String> nameCol = new TableColumn<>("Name");
+                        TableColumn<DepartmentDisplay, String> nameCol = new TableColumn<>("Name");
 
-            TableColumn<DepartmentDisplay, String> managerCol = new TableColumn<>("Manager");
+                        TableColumn<DepartmentDisplay, String> managerCol = new TableColumn<>("Manager");
 
-            TableColumn<DepartmentDisplay, Date> createdAtCol = new TableColumn<>("Created At");
+                        TableColumn<DepartmentDisplay, Date> createdAtCol = new TableColumn<>("Created At");
 
-            TableColumn<DepartmentDisplay, Date> updatedAtCol = new TableColumn<>("Updated At");
+                        TableColumn<DepartmentDisplay, Date> updatedAtCol = new TableColumn<>("Updated At");
 
-            idCol.setCellValueFactory(cellData ->
-                    new SimpleIntegerProperty(cellData.getValue().getDepartment_id()).asObject());
+                        idCol.setCellValueFactory(cellData ->
+                                new SimpleIntegerProperty(cellData.getValue().getDepartment_id()).asObject());
 
-            nameCol.setCellValueFactory(cellData ->
-                    new SimpleStringProperty(cellData.getValue().getDepartment_name()));
+                        nameCol.setCellValueFactory(cellData ->
+                                new SimpleStringProperty(cellData.getValue().getDepartment_name()));
 
-            managerCol.setCellValueFactory(cellData ->
-                    new SimpleStringProperty(cellData.getValue().getManager()));
+                        managerCol.setCellValueFactory(cellData ->
+                                new SimpleStringProperty(cellData.getValue().getManager()));
 
-            createdAtCol.setCellValueFactory(cellData ->
-                    new SimpleObjectProperty<>(cellData.getValue().getCreated_at()));
+                        createdAtCol.setCellValueFactory(cellData ->
+                                new SimpleObjectProperty<>(cellData.getValue().getCreated_at()));
 
-            updatedAtCol.setCellValueFactory(cellData ->
-                    new SimpleObjectProperty<>(cellData.getValue().getUpdated_at()));
+                        updatedAtCol.setCellValueFactory(cellData ->
+                                new SimpleObjectProperty<>(cellData.getValue().getUpdated_at()));
 
 
-            department_table.getColumns().addAll(idCol, nameCol, managerCol, createdAtCol, updatedAtCol);
-            department_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-            populateDepartmentTable();
+                        department_table.getColumns().addAll(idCol, nameCol, managerCol, createdAtCol, updatedAtCol);
+                        department_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
+                        populateDepartmentTable();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
+            departMentThread.start();
+
+//            Thread employeeThread = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        TableColumn<DepartmentDisplay, Integer> idCol = new TableColumn<>("Id");
+//
+//                        TableColumn<DepartmentDisplay, String> nameCol = new TableColumn<>("Name");
+//
+//                        TableColumn<DepartmentDisplay, String> managerCol = new TableColumn<>("Manager");
+//
+//                        TableColumn<DepartmentDisplay, Date> createdAtCol = new TableColumn<>("Created At");
+//
+//                        TableColumn<DepartmentDisplay, Date> updatedAtCol = new TableColumn<>("Updated At");
+//
+//                        idCol.setCellValueFactory(cellData ->
+//                                new SimpleIntegerProperty(cellData.getValue().getDepartment_id()).asObject());
+//
+//                        nameCol.setCellValueFactory(cellData ->
+//                                new SimpleStringProperty(cellData.getValue().getDepartment_name()));
+//
+//                        managerCol.setCellValueFactory(cellData ->
+//                                new SimpleStringProperty(cellData.getValue().getManager()));
+//
+//                        createdAtCol.setCellValueFactory(cellData ->
+//                                new SimpleObjectProperty<>(cellData.getValue().getCreated_at()));
+//
+//                        updatedAtCol.setCellValueFactory(cellData ->
+//                                new SimpleObjectProperty<>(cellData.getValue().getUpdated_at()));
+//
+//
+//                        department_table.getColumns().addAll(idCol, nameCol, managerCol, createdAtCol, updatedAtCol);
+//                        department_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+//
+//                        populateDepartmentTable();
+//                    } catch (Exception e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                }
+//            });
+//
+//            employeeThread.start();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -286,6 +334,22 @@ public class EmployeeController {
     protected void openAddEmployeeModal(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("add_employee.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    protected void openAddDepartmentModal(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("add_department.fxml"));
             Parent root = loader.load();
 
             Stage stage = new Stage();

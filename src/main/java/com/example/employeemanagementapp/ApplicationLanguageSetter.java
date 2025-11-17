@@ -11,7 +11,7 @@ import java.util.Map;
 public class ApplicationLanguageSetter {
 
     public static String getCurrentLanguage() {
-        Map<String, String> currentLanguageMap = JsonObjectToMapAdapter.convert(FileManipulator.readJsonObject("current_language.json"));
+        Map<String, String> currentLanguageMap = JsonObjectToMapAdapter.convert(FileManipulator.readJsonObjectFromFile("current_language.json"));
 
         return currentLanguageMap.get("language");
     }

@@ -1,23 +1,14 @@
 package com.example.employeemanagementapp;
 
-import com.example.employeemanagementapp.Entities.DepartmentAssignments;
-import com.example.employeemanagementapp.Entities.Departments;
 import com.example.employeemanagementapp.Entities.Employee;
-import com.example.employeemanagementapp.Service.DepartmentService;
 import com.example.employeemanagementapp.Service.EmployeeService;
 import com.example.employeemanagementapp.Translators.Translator;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.controlsfx.control.PropertySheet;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AddEmployeeController {
     @FXML
@@ -92,18 +83,11 @@ public class AddEmployeeController {
     @FXML
     private Label start_date_error;
 
-    private Departments selectedDepartment = new Departments.Builder().build();
-
     private Translator translator = ApplicationLanguageSetter.getTranslator();
-
-    private DepartmentService departmentService;
 
     private EmployeeService employeeService;
 
-    private int currentDepartmentPage = 1;
-
     public AddEmployeeController() throws Exception {
-        departmentService = new DepartmentService();
         employeeService = new EmployeeService();
     }
 

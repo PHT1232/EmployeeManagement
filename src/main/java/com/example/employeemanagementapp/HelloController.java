@@ -124,7 +124,6 @@ public class HelloController {
     public HelloController() throws Exception {
         reposistory = (EmployeeRepository) new EmployeeRepository()
                 .Mapper(new EmployeeMapper())
-                .DatabaseConnection(DatabaseConnection.getConnection())
                 .TableName("Employees").build();
 
     }

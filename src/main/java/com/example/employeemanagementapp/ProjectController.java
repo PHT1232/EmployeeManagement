@@ -40,7 +40,6 @@ public class ProjectController {
     public ProjectController() throws SQLException {
         reposistory = new ProjectRepository()
                 .Mapper(new ProjectMapper())
-                .DatabaseConnection(DatabaseConnection.getConnection())
                 .TableName("Projects").build();
     }
 

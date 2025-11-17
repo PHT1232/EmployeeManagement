@@ -9,7 +9,7 @@ public class TranslatorImplements implements Translator {
     private final Map<String, String> dictionary;
 
     public TranslatorImplements(String fileName) {
-        dictionary = JsonObjectToMapAdapter.convert(FileManipulator.readJsonObject(fileName));
+        dictionary = JsonObjectToMapAdapter.convert(FileManipulator.readJsonObjectFromFile(fileName));
     }
 
     @Override

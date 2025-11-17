@@ -2,7 +2,6 @@ package com.example.employeemanagementapp.Adapters;
 
 import org.json.JSONObject;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,39 +1,25 @@
 package com.example.employeemanagementapp.Service;
 
 import com.example.employeemanagementapp.Adapters.DatabaseObjectToMonthlyStatsAdapter;
-import com.example.employeemanagementapp.Connection.DatabaseConnection;
-import com.example.employeemanagementapp.Entities.DepartmentAssignments;
-import com.example.employeemanagementapp.Entities.Departments;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
 import com.example.employeemanagementapp.Models.MonthlyStats;
-import com.example.employeemanagementapp.Repositories.DepartmentAssignmentRepository;
 import com.example.employeemanagementapp.Repositories.EmployeeRepository;
-import com.example.employeemanagementapp.Repositories.Reposistory;
+
 
 import java.sql.Date;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EmployeeService {
     private static EmployeeRepository employeeReposistory;
-    private static DepartmentAssignmentRepository departmentAssignmentRepository;
     private static PaginationService<Employee> paginationService ;
 
     public EmployeeService() throws Exception {
         employeeReposistory = (EmployeeRepository) new EmployeeRepository()
                 .Mapper(new EmployeeMapper())
-                .DatabaseConnection(DatabaseConnection.getConnection())
                 .TableName("employees").build();
-
-        departmentAssignmentRepository = (DepartmentAssignmentRepository) new DepartmentAssignmentRepository()
-                .DatabaseConnection(DatabaseConnection.getConnection())
-                .TableName("department_assignments").build();
 
         paginationService = new PaginationServiceImpl<>(employeeReposistory);
     }
@@ -50,6 +36,28 @@ public class EmployeeService {
             list = adapter.convert(rs);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+
+        return list;
+    }
+
+    public Employee findById(int id) {
+        Employee employee;
+        try {
+            employee = employeeReposistory.findById(id, "employee_id");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return employee;
+    }
+
+    public List<Employee> searchEmployee(String name) {
+        List<Employee> list = new ArrayList<>();
+        try {
+            list = employeeReposistory.searchByName(name, "first_name");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         return list;

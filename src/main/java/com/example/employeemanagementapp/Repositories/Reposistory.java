@@ -1,14 +1,12 @@
 package com.example.employeemanagementapp.Repositories;
 
+import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Entities.Projects;
 import com.example.employeemanagementapp.Mapper.RowMapper;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +16,11 @@ public class Reposistory<T> {
     protected String tableName;
 
     public Reposistory() {
+        try {
+            connection = DatabaseConnection.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private PreparedStatement preparedInsertStatement(T entity) throws Exception {
@@ -97,11 +100,6 @@ public class Reposistory<T> {
         return this;
     }
 
-    public Reposistory<T> DatabaseConnection(Connection connection) {
-        this.connection = connection;
-        return this;
-    }
-
     public Reposistory<T> build() {
         return this;
     }
@@ -120,16 +118,29 @@ public class Reposistory<T> {
     }
 
     public T findById(int id, String idField) throws Exception {
-        T employee = null;
+        T entity = null;
         String sql = "SELECT * FROM " + tableName + " WHERE " + idField + " = " + id;
 
         try (Statement statement = connection.createStatement();ResultSet rs = statement.executeQuery(sql)) {
             while (rs.next()) {
-                employee = rowMapper.mapRow(rs);
+                entity = rowMapper.mapRow(rs);
             }
         }
 
-        return employee;
+        return entity;
+    }
+
+    public List<T> searchByName(String name, String nameField) throws Exception {
+        List<T> listEntity = new ArrayList<>();
+        String sql = "SELECT * FROM " + tableName + " WHERE " + nameField + " LIKE '%" + name + "%'";
+
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql)) {
+            while (rs.next()) {
+                listEntity.add(rowMapper.mapRow(rs));
+            }
+        }
+
+        return listEntity;
     }
 
     public List<T> fetchPagination(int numOfRow, int offset) throws Exception {

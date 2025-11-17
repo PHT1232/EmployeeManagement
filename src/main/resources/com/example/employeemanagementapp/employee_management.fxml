@@ -185,7 +185,7 @@
                                                    </Label>
                                        <HBox alignment="CENTER_RIGHT" prefHeight="62.0" prefWidth="1252.0" HBox.hgrow="ALWAYS">
                                           <children>
-                                             <Button fx:id="add_departments_button" mnemonicParsing="false" prefHeight="48.0" prefWidth="190.0" styleClass="button-selected" text="Add Departments" />
+                                             <Button fx:id="add_departments_button" mnemonicParsing="false" onAction="#openAddDepartmentModal" prefHeight="48.0" prefWidth="190.0" styleClass="button-selected" text="Add Departments" />
                                           </children>
                                           <HBox.margin>
                                              <Insets right="10.0" />

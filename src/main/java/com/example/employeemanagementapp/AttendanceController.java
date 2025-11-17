@@ -45,7 +45,6 @@ public class AttendanceController {
     public AttendanceController() throws Exception {
         this.reposistory = new AttendanceRepository()
                 .Mapper(new AttendanceMapper())
-                .DatabaseConnection(DatabaseConnection.getConnection())
                 .TableName("Attendance").build();
     }
 

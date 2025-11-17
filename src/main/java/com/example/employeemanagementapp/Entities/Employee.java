@@ -240,17 +240,6 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" +
-                "employee_id=" + employee_id +
-                ", first_name='" + first_name + '\'' +
-                ", last_name='" + last_name + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", position='" + position + '\'' +
-                ", salary=" + salary +
-                ", hire_date=" + hire_date +
-                ", created_at=" + created_at +
-                ", updated_at=" + updated_at +
-                '}';
+        return email + first_name;
     }
 }
