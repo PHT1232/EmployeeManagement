@@ -13,6 +13,7 @@ public class MainApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("dashbroad_main.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        stage.setMaximized(true);
         stage.setTitle("Main!");
         stage.setScene(scene);
         stage.show();
