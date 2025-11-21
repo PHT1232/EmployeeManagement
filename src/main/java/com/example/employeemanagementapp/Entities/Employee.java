@@ -240,6 +240,6 @@ public class Employee {
 
     @Override
     public String toString() {
-        return email + first_name;
+        return email + ", "  + first_name + " " + last_name;
     }
 }

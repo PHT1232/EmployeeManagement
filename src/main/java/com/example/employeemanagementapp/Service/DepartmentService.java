@@ -5,6 +5,7 @@ import com.example.employeemanagementapp.Mapper.DepartmentMapper;
 import com.example.employeemanagementapp.Models.DepartmentDisplay;
 import com.example.employeemanagementapp.Repositories.DepartmentRepository;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,40 @@ public class DepartmentService {
 
     public List<Departments> fetchList(int numOfRows, int page) throws Exception {
         return paginationService.fetchData(numOfRows, page);
+    }
+
+    public Departments findById(int id) {
+        Departments departments = null;
+        try {
+            departments = departmentRepository.findById(id, "department_id");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return departments;
+    }
+
+    public Departments findDepartmentByEmployeeId(int id) {
+        Departments departments = null;
+        try {
+            departments = departmentRepository.findDepartmentByEmployeeId(id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return departments;
+    }
+
+    public int getTotalDepartment() {
+        int total = 0;
+
+        try {
+            total = departmentRepository.totalRows();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return total;
     }
 
     public List<DepartmentDisplay> fetchListWithEmployeeName(int numOfRows, int page) throws Exception {

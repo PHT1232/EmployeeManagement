@@ -1,128 +1,180 @@
 package com.example.employeemanagementapp;
 
-import com.example.employeemanagementapp.Connection.DatabaseConnection;
-import com.example.employeemanagementapp.Entities.Projects;
-import com.example.employeemanagementapp.Mapper.ProjectMapper;
-import com.example.employeemanagementapp.Repositories.ProjectRepository;
-import com.example.employeemanagementapp.Repositories.Reposistory;
-import javafx.event.ActionEvent;
+import com.example.employeemanagementapp.Models.ProjectDisplay;
+import com.example.employeemanagementapp.Service.ProjectService;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.SQLException;
 
 public class ProjectController {
     @FXML
-    private TextField projectid;
-
+    private Label main_header_label;
     @FXML
-    private TextField projectname;
-
+    private Label main_date_label;
     @FXML
-    private TextField description;
-
+    private Label first_card_label;
     @FXML
-    private DatePicker startdate;
-
+    private Label second_card_label;
     @FXML
-    private DatePicker enddate;
-
-    private final Reposistory<Projects> reposistory;
-
-    public ProjectController() throws SQLException {
-        reposistory = new ProjectRepository()
-                .Mapper(new ProjectMapper())
-                .TableName("Projects").build();
-    }
-
-    private Projects mapEntity() {
-        Projects entity = new Projects.Builder()
-                .Project_id(Integer.parseInt(projectid.getText()))
-                .Project_name(projectname.getText())
-                .Description(description.getText())
-                .Start_date(Date.valueOf(startdate.getValue()))
-                .End_date(Date.valueOf(enddate.getValue()))
-                .build();
-
-        return entity;
-    }
-
-    private void changeController(ActionEvent event, String view) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(view));
-        Parent root = fxmlLoader.load();
-
-        Stage newStage = new Stage();
-        newStage.setTitle("Insert Attendance");
-        newStage.setScene(new Scene(root));
-        newStage.setResizable(false);
-        newStage.show();
-
-        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        currentStage.close();
-    }
-
+    private Label third_card_label;
     @FXML
-    protected void onEmployeeButtonClick(ActionEvent event) {
+    private Label fouth_card_label;
+    @FXML
+    private Label project_overview_label;
+    @FXML
+    private Button add_project_button;
+    @FXML
+    private TableView project_table;
+    @FXML
+    private ScrollPane main_scrollpane;
+
+    private ProjectService projectService;
+
+    private int currentPage = 1;
+
+    public ProjectController() {
         try {
-            changeController(event, "hello-view.fxml");
+            projectService = new ProjectService();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    protected void openAddProjectModal() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("add_project.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
     @FXML
-    protected void onAttendanceButtonClick(ActionEvent event) {
+    protected void initialize() {
+        main_scrollpane.setFitToWidth(true);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    populateColumn();
+                    populateTable();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        thread.start();
+
+        project_table.setRowFactory(tv -> {
+            TableRow<ProjectDisplay> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getClickCount() == 2) {
+                    ProjectDisplay clicked = row.getItem();
+                    openEditPage(clicked);
+                }
+            });
+            return row;
+        });
+
+    }
+
+    private void openEditPage(ProjectDisplay project) {
         try {
-            changeController(event, "attendance.fxml");
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("edit_project.fxml"));
+            Parent root = loader.load();
+
+            EditProjectController editController = loader.getController();
+
+            editController.initProject(project);
+            editController.initInput();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void populateColumn() {
+        TableColumn<ProjectDisplay, String> projectNameColumn = new TableColumn<>("Project Name");
+        TableColumn<ProjectDisplay, Date> startDateColumn = new TableColumn<>("Start Date");
+        TableColumn<ProjectDisplay, Date> endDateColumn = new TableColumn<>("End Date");
+        TableColumn<ProjectDisplay, Double> commissionRateColumn = new TableColumn<>("Commission Rate (%)");
+        TableColumn<ProjectDisplay, String> numberEmployeeColumn = new TableColumn<>("Employees");
+        TableColumn<ProjectDisplay, Double> revenueColumn = new TableColumn<>("Est. Revenue");
+        TableColumn<ProjectDisplay, Double> totalEarningColumn = new TableColumn<>("Total Earnings");
+        TableColumn<ProjectDisplay, String> statusColumn = new TableColumn<>("Status");
+
+        projectNameColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getProjectName()));
+        startDateColumn.setCellValueFactory(cellData ->
+                new SimpleObjectProperty<>(cellData.getValue().getStartDate()));
+        endDateColumn.setCellValueFactory(cellData ->
+                new SimpleObjectProperty<>(cellData.getValue().getEndDate()));
+        commissionRateColumn.setCellValueFactory(cellData ->
+                new SimpleDoubleProperty(cellData.getValue().commissionRateProperty()).asObject());
+        numberEmployeeColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getNumberOfEmployee()));
+        revenueColumn.setCellValueFactory(cellData ->
+                new SimpleDoubleProperty(cellData.getValue().getRevenue()).asObject());
+        totalEarningColumn.setCellValueFactory(cellData ->
+                new SimpleDoubleProperty(cellData.getValue().getTotalEarnings()).asObject());
+        statusColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getStatus()));
+
+        project_table.getColumns().addAll(projectNameColumn, startDateColumn, endDateColumn, commissionRateColumn, numberEmployeeColumn, revenueColumn, totalEarningColumn, statusColumn);
+        project_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
+    }
+
+    private void populateTable() throws Exception{
+        ObservableList<ProjectDisplay> list = FXCollections.observableArrayList(projectService.fetchList(10, currentPage));
+        project_table.setItems(list);
+    }
+
+    @FXML
+    protected void prev() {
+        currentPage--;
+        try {
+            if (currentPage != 0) {
+                populateTable();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @FXML
-    protected void onUpdateButtonClick() {
+    protected void next() {
+        currentPage++;
         try {
-            this.reposistory.update(mapEntity());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @FXML
-    protected void onListAllButtonClick() {
-        try {
-            reposistory.findAll().forEach(System.out::println);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @FXML
-    protected void onHelloButtonClick() {
-        try {
-            reposistory.insert(mapEntity());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @FXML
-    protected void onDeleteButtonClick() {
-        try {
-            Projects entity = new Projects.Builder().build();
-            entity.setProject_id(Integer.parseInt(projectid.getText()));
-
-            reposistory.delete(entity);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            populateTable();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

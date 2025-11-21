@@ -156,6 +156,19 @@ public class Reposistory<T> {
         return list;
     }
 
+    public int totalRows() throws Exception {
+        int totalRow = 0;
+        String sql = "SELECT COUNT(1) as num FROM " + tableName;
+
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql)) {
+            while (rs.next()) {
+                totalRow = rs.getInt("num");
+            }
+        }
+
+        return totalRow;
+    }
+
     public int update(T entity) throws Exception {
         try (PreparedStatement statement = preparedUpdateStatement(entity)) {
             return statement.executeUpdate();

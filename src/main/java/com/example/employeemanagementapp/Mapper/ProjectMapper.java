@@ -15,6 +15,9 @@ public class ProjectMapper implements RowMapper<Projects> {
                 .Start_date(resultSet.getDate("start_date"))
                 .Created_at(resultSet.getDate("created_at"))
                 .Updated_at(resultSet.getDate("updated_at"))
+                .IsFinished(resultSet.getBoolean("is_finished"))
+                .Total_revenue(resultSet.getDouble("total_revenue"))
+                .Commission_rate(resultSet.getDouble("commission_rate"))
                 .build();
 
         return projects;

@@ -1,14 +1,12 @@
 package com.example.employeemanagementapp.Service;
 
-import com.example.employeemanagementapp.Adapters.DatabaseObjectToMonthlyStatsAdapter;
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
-import com.example.employeemanagementapp.Models.MonthlyStats;
+import com.example.employeemanagementapp.Models.EmployeeDisplay;
+import com.example.employeemanagementapp.Models.WageDisplay;
 import com.example.employeemanagementapp.Repositories.EmployeeRepository;
 
 
-import java.sql.Date;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,17 +26,64 @@ public class EmployeeService {
         return paginationService.fetchData(numOfRows, page);
     }
 
-    private List<MonthlyStats> fetchMonthlyData(Date monthStart, Date monthEnd) {
-        List<MonthlyStats> list = new ArrayList<>();
+    public List<EmployeeDisplay> fetchDisplayList(int numOfRows, int page) throws Exception {
+        List<Employee> list = paginationService.fetchData(numOfRows, page);
+        List<EmployeeDisplay> displayList = new ArrayList<>();
 
-        try (ResultSet rs = employeeReposistory.fetchMonthlyData(monthStart, monthEnd)){
-            DatabaseObjectToMonthlyStatsAdapter adapter = new DatabaseObjectToMonthlyStatsAdapter();
-            list = adapter.convert(rs);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        list.forEach(employee -> {
+            try {
+                EmployeeDisplay employeeDisplay = new EmployeeDisplay.Builder()
+                        .EmployeeName(employee.getFirst_name() + employee.getLast_name())
+                                .Contact(employee.getEmail() + "\n" + employee.getPhone())
+                                        .Position(employee.getPosition())
+                                                .StartDate(employee.getHire_date()).build();
+
+
+                displayList.add(employeeDisplay);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        return displayList;
+    }
+
+    public List<WageDisplay> fetchEmployeeForWageDisplay(int numOfRows, int page) throws Exception {
+        List<Employee> list = paginationService.fetchData(numOfRows, page);
+        List<WageDisplay> displayList = new ArrayList<>();
+
+        list.forEach(employee -> {
+            try {
+                EmployeeDecorator employeeDecorator = new EmployeeDecorator();
+                WageDisplay wageDisplay = new WageDisplay.Builder()
+                        .EmployeeId(employee.getEmployee_id())
+                                .EmployeeName(employee.getLast_name() + " " + employee.getFirst_name())
+                                        .Position(employee.getPosition())
+                                                .BaseSalary(employee.getSalary())
+                                                        .TotalCompensation(employee.getSalary() + employee.getBonus_hours_month() + employee.getProject_bonus_month())
+                                                                .Bonus(employee.getBonus_hours_month() + employee.getProject_bonus_month()).build();
+
+                employeeDecorator.addDepartmentName(wageDisplay, employee.getEmployee_id());
+
+                displayList.add(wageDisplay);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        return displayList;
+    }
+
+    public int getTotalEmployee() {
+        int total = 0;
+
+        try {
+            total = employeeReposistory.totalRows();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
-        return list;
+        return total;
     }
 
     public Employee findById(int id) {
@@ -65,27 +110,6 @@ public class EmployeeService {
 
     public int addEmployee(Employee employee) throws Exception {
         return employeeReposistory.insert(employee);
-    }
-
-    public void updateMonthlySalaries(List<MonthlyStats> list) throws Exception {
-        Employee employee;
-        for (MonthlyStats ms : list) {
-            double basePay = ms.getBaseWage() * ms.getDaysQualified();
-            double bonus = ms.getBonusHours() * (ms.getBaseWage() * 0.15);
-            double totalSalary = basePay + bonus;
-
-            double projectBonus = employeeReposistory.fetchProjectBonusMonth(ms.getEmployee_id());
-            totalSalary += projectBonus;
-
-            employee = new Employee.Builder()
-                    .Employee_id(ms.getId())
-                    .Total_hours_month(ms.getTotalHours())
-                    .Bonus_hours_month(ms.getBonusHours())
-                    .Salary(totalSalary)
-                    .build();
-
-            employeeReposistory.update(employee);
-        }
     }
 
 }

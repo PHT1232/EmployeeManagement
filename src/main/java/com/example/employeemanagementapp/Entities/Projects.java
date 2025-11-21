@@ -12,6 +12,7 @@ public class Projects {
     private Date updated_at;
     private double total_revenue;
     private double commission_rate;
+    private boolean is_finished;
 
     private Projects(Builder builder) {
         project_id = builder.project_id;
@@ -23,6 +24,7 @@ public class Projects {
         updated_at = builder.updated_at;
         total_revenue = builder.total_revenue;
         commission_rate = builder.commission_rate;
+        is_finished = builder.is_finished;
     }
 
     public static class Builder {
@@ -35,6 +37,7 @@ public class Projects {
       private Date updated_at;
       private double total_revenue;
       private double commission_rate;
+      private boolean is_finished;
 
       public Builder Project_id(int project_id) {
           this.project_id = project_id;
@@ -81,9 +84,22 @@ public class Projects {
           return this;
       }
 
+      public Builder IsFinished(boolean isCompleted) {
+          this.is_finished = isCompleted;
+          return this;
+      }
+
       public Projects build() {
           return new Projects(this);
       }
+    }
+
+    public boolean isIs_finished() {
+        return is_finished;
+    }
+
+    public void setIs_finished(boolean is_finished) {
+        this.is_finished = is_finished;
     }
 
     public double getTotal_revenue() {

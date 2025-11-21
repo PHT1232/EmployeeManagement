@@ -55,7 +55,7 @@
     -fx-border-color: lightgray;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-padding: 5;
+    -fx-padding: 5;throw new RuntimeException(e);
     -fx-font-size: 14px;
 }
 
