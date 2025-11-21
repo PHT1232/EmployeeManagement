@@ -11,12 +11,12 @@ public class AttendanceMapper implements RowMapper<Attendance> {
                 .Attendance_id(resultSet.getInt("attendance_id"))
                 .Employee_id(resultSet.getInt("employee_id"))
                 .Attendance_date(resultSet.getDate("attendance_date"))
-                .Check_in(resultSet.getDate("check_in"))
-                .Check_out(resultSet.getDate("check_out"))
+                .Check_in(resultSet.getTimestamp("check_in"))
+                .Check_out(resultSet.getTimestamp("check_out"))
                 .Status(resultSet.getString("status"))
                 .Notes(resultSet.getString("notes"))
-                .Created_at(resultSet.getDate("created_at"))
-                .Updated_at(resultSet.getDate("updated_at"))
+                .Created_at(resultSet.getTimestamp("created_at"))
+                .Updated_at(resultSet.getTimestamp("updated_at"))
                 .build();
 
         return attendance;

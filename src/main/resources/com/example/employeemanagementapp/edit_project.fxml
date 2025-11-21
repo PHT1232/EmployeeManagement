@@ -46,7 +46,7 @@
                                 <Insets left="10.0" />
                             </VBox.margin>
                         </Label>
-                        <TextField fx:id="project_name_input" prefHeight="38.0" prefWidth="166.0" promptText="Enter project name" styleClass="textfield_css">
+                        <TextField fx:id="project_name_input" disable="true" prefHeight="38.0" prefWidth="166.0" promptText="Enter project name" styleClass="textfield_css">
                             <VBox.margin>
                                 <Insets left="10.0" right="10.0" />
                             </VBox.margin>
@@ -76,7 +76,7 @@
                                         <Insets left="10.0" />
                                     </VBox.margin>
                                 </Label>
-                                <DatePicker fx:id="startdatepicker" prefHeight="42.0" prefWidth="569.0" styleClass="custom-date-picker" VBox.vgrow="ALWAYS">
+                                <DatePicker fx:id="startdatepicker" disable="true" prefHeight="42.0" prefWidth="569.0" styleClass="custom-date-picker" VBox.vgrow="ALWAYS">
                                     <VBox.margin>
                                         <Insets left="10.0" right="10.0" />
                                     </VBox.margin>
@@ -104,7 +104,7 @@
                                         <Insets left="10.0" />
                                     </VBox.margin>
                                 </Label>
-                                <DatePicker fx:id="enddatepicker" prefHeight="42.0" prefWidth="569.0" styleClass="custom-date-picker" VBox.vgrow="ALWAYS">
+                                <DatePicker fx:id="enddatepicker" disable="true" prefHeight="42.0" prefWidth="569.0" styleClass="custom-date-picker" VBox.vgrow="ALWAYS">
                                     <VBox.margin>
                                         <Insets left="10.0" right="10.0" />
                                     </VBox.margin>
@@ -136,7 +136,7 @@
                                         <Insets left="10.0" />
                                     </VBox.margin>
                                 </Label>
-                                <TextField fx:id="commission_input" prefHeight="38.0" prefWidth="166.0" promptText="15" styleClass="textfield_css">
+                                <TextField fx:id="commission_input" disable="true" prefHeight="38.0" prefWidth="166.0" promptText="15" styleClass="textfield_css">
                                     <VBox.margin>
                                         <Insets left="10.0" right="10.0" />
                                     </VBox.margin>
@@ -164,7 +164,7 @@
                                         <Insets left="10.0" />
                                     </VBox.margin>
                                 </Label>
-                                <TextField fx:id="revenue_input" prefHeight="38.0" prefWidth="166.0" promptText="100000" styleClass="textfield_css">
+                                <TextField fx:id="revenue_input" disable="true" prefHeight="38.0" prefWidth="166.0" promptText="100000" styleClass="textfield_css">
                                     <VBox.margin>
                                         <Insets left="10.0" right="10.0" />
                                     </VBox.margin>
@@ -219,7 +219,23 @@
     <bottom>
         <VBox alignment="CENTER" prefHeight="74.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="save_button" mnemonicParsing="false" onAction="#saveButton" prefHeight="43.0" prefWidth="306.0" styleClass="button-selected" text="Save" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                      <Button fx:id="save_button" mnemonicParsing="false" onAction="#saveButton" prefHeight="43.0" prefWidth="306.0" styleClass="button-selected" text="Save">
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="edit_button" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#editButton" prefHeight="43.0" prefWidth="306.0" styleClass="button-regular" text="Edit">
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </HBox>
             </children>
         </VBox>
     </bottom>

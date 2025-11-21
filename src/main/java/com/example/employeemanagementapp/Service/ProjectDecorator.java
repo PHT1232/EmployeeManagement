@@ -36,4 +36,8 @@ public class ProjectDecorator {
             }
         });
     }
+
+    public List<Employee> getEmployee(int id) throws Exception {
+        return repository.getEmployeeByProjectId(id);
+    }
 }

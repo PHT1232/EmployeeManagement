@@ -47,9 +47,12 @@ public class ProjectService {
         });
 
         return displayList;
-
     }
 
+    public List<Employee> getEmployee(int id) throws Exception {
+        ProjectDecorator projectDecorator = new ProjectDecorator();
+        return projectDecorator.getEmployee(id);
+    }
 
     public int insert(Projects projects) throws Exception {
         return reposistory.insert(projects);

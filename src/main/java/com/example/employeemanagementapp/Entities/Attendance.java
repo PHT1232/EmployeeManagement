@@ -1,17 +1,18 @@
 package com.example.employeemanagementapp.Entities;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Attendance {
     private int attendance_id;
     private int employee_id;
     private Date attendance_date;
-    private Date check_in;
-    private Date check_out;
+    private Timestamp check_in;
+    private Timestamp check_out;
     private String status;
     private String notes;
-    private Date created_at;
-    private Date updated_at;
+    private Timestamp created_at;
+    private Timestamp updated_at;
     
     private Attendance(Builder builder) {
         attendance_id = builder.attendance_id;
@@ -29,12 +30,12 @@ public class Attendance {
         private int attendance_id;
         private int employee_id;
         private Date attendance_date;
-        private Date check_in;
-        private Date check_out;
+        private Timestamp check_in;
+        private Timestamp check_out;
         private String status;
         private String notes;
-        private Date created_at;
-        private Date updated_at;
+        private Timestamp created_at;
+        private Timestamp updated_at;
 
         public Builder Attendance_id(int attendance_id) {
             this.attendance_id = attendance_id;
@@ -51,12 +52,12 @@ public class Attendance {
             return this;
         }
 
-        public Builder Check_in(Date check_in) {
+        public Builder Check_in(Timestamp check_in) {
             this.check_in = check_in;
             return this;
         }
 
-        public Builder Check_out(Date check_out) {
+        public Builder Check_out(Timestamp check_out) {
             this.check_out = check_out;
             return this;
         }
@@ -71,12 +72,12 @@ public class Attendance {
             return this;
         }
 
-        public Builder Created_at(Date created_at) {
+        public Builder Created_at(Timestamp created_at) {
             this.created_at = created_at;
             return this;
         }
 
-        public Builder Updated_at(Date updated_at) {
+        public Builder Updated_at(Timestamp updated_at) {
             this.updated_at = updated_at;
             return this;
         }
@@ -113,19 +114,27 @@ public class Attendance {
         this.attendance_date = attendance_date;
     }
 
-    public Date getCheck_in() {
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Timestamp getCheck_in() {
         return check_in;
     }
 
-    public void setCheck_in(Date check_in) {
+    public void setCheck_in(Timestamp check_in) {
         this.check_in = check_in;
     }
 
-    public Date getCheck_out() {
+    public Timestamp getCheck_out() {
         return check_out;
     }
 
-    public void setCheck_out(Date check_out) {
+    public void setCheck_out(Timestamp check_out) {
         this.check_out = check_out;
     }
 
@@ -137,27 +146,19 @@ public class Attendance {
         this.status = status;
     }
 
-    public Date getCreated_at() {
+    public Timestamp getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(Timestamp created_at) {
         this.created_at = created_at;
     }
 
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public Date getUpdated_at() {
+    public Timestamp getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(Date updated_at) {
+    public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
     }
 }

@@ -271,31 +271,7 @@
                                                 </Text>
                                                 <ScrollPane hbarPolicy="NEVER" prefHeight="624.0" prefWidth="427.0" style="-fx-background: white; -fx-border-color: white;" vbarPolicy="NEVER">
                                                     <content>
-                                                        <VBox prefHeight="100.0" prefWidth="409.0" style="-fx-border-color: transparent transparent black transparent;">
-                                                            <children>
-                                                                <Text style="-fx-fill: green;" text="Sarah Johnson">
-                                                                    <font>
-                                                                        <Font size="20.0" />
-                                                                    </font>
-                                                                </Text>
-                                                                <Text style="-fx-fill: gray;" text="Checked in">
-                                                                    <font>
-                                                                        <Font size="15.0" />
-                                                                    </font>
-                                                                    <VBox.margin>
-                                                                        <Insets top="10.0" />
-                                                                    </VBox.margin>
-                                                                </Text>
-                                                                <Text text="2 minutes ago">
-                                                                    <font>
-                                                                        <Font size="15.0" />
-                                                                    </font>
-                                                                    <VBox.margin>
-                                                                        <Insets top="5.0" />
-                                                                    </VBox.margin>
-                                                                </Text>
-                                                            </children>
-                                                        </VBox>
+                                                        <VBox fx:id="activityContainer" prefWidth="409.0" />
                                                     </content>
                                                     <VBox.margin>
                                                         <Insets left="15.0" right="15.0" top="15.0" />

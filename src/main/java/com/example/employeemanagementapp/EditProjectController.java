@@ -158,9 +158,16 @@ public class EditProjectController {
     }
 
     public void initInput() {
+        ObservableList<Employee> employees = null;
+        try {
+            employees = FXCollections.observableArrayList(projectService.getEmployee(projects.getProject_id()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         String commissionText = String.valueOf(projects.getCommission_rate());
         String revenueText = String.valueOf(projects.getTotal_revenue());
 
+        current_selected_member.setItems(employees);
         commission_input.setText(commissionText);
         revenue_input.setText(revenueText);
         project_name_input.setText(projects.getProject_name());
@@ -199,7 +206,7 @@ public class EditProjectController {
             projectService = new ProjectService();
             
             ObservableList<Employee> items = FXCollections.observableArrayList(employeeService.fetchList(10, current));
-            
+
             employee_for_select_list.setItems(items);
             employee_for_select_list.getItems().add(new Employee.Builder().Email("Show more").First_name("...").Last_name("").build());
             
@@ -211,19 +218,20 @@ public class EditProjectController {
                 }
             });
 
+            current_selected_member.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
+                @Override
+                public void changed(ObservableValue<? extends Employee> observableValue, Employee oldValue, Employee newValue) {
+                    if (newValue != null) {
+                        current_selected_member.getSelectionModel().clearSelection();
+                        current_selected_member.getItems().remove(newValue);
+                    }
+                }
+            });
+
             employee_for_select_list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
                 @Override
                 public void changed(ObservableValue<? extends Employee> observableValue, Employee oldValue, Employee newValue) {
-                    if (oldValue.getEmail().equals("Show more")) {
-                        try {
-                            current++;
-                            employee_for_select_list.getItems().addAll(employeeService.fetchList(10, current));
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
                         current_selected_member.getItems().add(newValue);
-                    }
                 }
             });
         } catch (Exception e) {
@@ -241,5 +249,14 @@ public class EditProjectController {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    @FXML
+    protected void editButton() {
+        project_name_input.setDisable(!project_name_input.isDisabled());
+        startdatepicker.setDisable(!startdatepicker.isDisabled());
+        enddatepicker.setDisable(!enddatepicker.isDisabled());
+        commission_input.setDisable(!commission_input.isDisabled());
+        revenue_input.setDisable(!revenue_input.isDisabled());
     }
 }

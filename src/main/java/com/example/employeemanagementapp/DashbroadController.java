@@ -1,6 +1,8 @@
 package com.example.employeemanagementapp;
 
 import com.example.employeemanagementapp.Entities.Employee;
+import com.example.employeemanagementapp.Models.AttendanceDisplay;
+import com.example.employeemanagementapp.Service.AttendanceService;
 import com.example.employeemanagementapp.Service.EmployeeService;
 import com.example.employeemanagementapp.Translators.Translator;
 import javafx.animation.KeyFrame;
@@ -9,16 +11,18 @@ import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
+import javafx.geometry.Insets;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -84,6 +88,9 @@ public class DashbroadController {
     private Text third_num_label;
     @FXML
     private Text forth_num_label;
+    @FXML
+    private VBox activityContainer;
+
 
 
     private Translator translator = ApplicationLanguageSetter.getTranslator();
@@ -168,14 +175,69 @@ public class DashbroadController {
         checked_out_button_filter.setText(translator.translate(checked_out_button_filter.getText()));
     }
 
+    public void addActivity(String name, String status, String timeAgo) {
+        VBox entryBox = new VBox();
+        entryBox.setStyle("-fx-border-color: transparent transparent black transparent;");
+        VBox.setMargin(entryBox, new Insets(10, 0, 0, 0));
+
+        Text nameText = new Text(name);
+        nameText.setStyle("-fx-fill: green;");
+        nameText.setFont(Font.font(20));
+
+        Text statusText = new Text(status);
+        statusText.setStyle("-fx-fill: gray;");
+        statusText.setFont(Font.font(15));
+        VBox.setMargin(statusText, new Insets(10, 0, 0, 0));
+
+        Text timeText = new Text(timeAgo);
+        timeText.setFont(Font.font(15));
+        VBox.setMargin(timeText, new Insets(5, 0, 0, 0));
+
+        entryBox.getChildren().addAll(nameText, statusText, timeText);
+
+        activityContainer.getChildren().add(entryBox);
+    }
+
+    private AttendanceDisplay currentDisplay = new AttendanceDisplay();
+    private AttendanceService attendanceService;
+
     @FXML
     protected void initialize() {
         main_scrollpane.setFitToWidth(true);
+        attendanceService = new AttendanceService();
         initChoiceBox();
         if (!ApplicationLanguageSetter.getCurrentLanguage().equals("EN")) {
             translateText();
         }
         first_num_label.setText(String.valueOf(employeeService.getTotalEmployee()));
+        Thread checkNewCheckIn = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        Thread.sleep(1000);
+                        AttendanceDisplay attendanceDisplayFromDb = attendanceService.getFirstAttendance();
+                        if (attendanceDisplayFromDb != null) {
+                            if (attendanceDisplayFromDb.getId() != currentDisplay.getId()) {
+                                currentDisplay = attendanceDisplayFromDb;
+
+                                javafx.application.Platform.runLater(() -> {
+                                    addActivity(
+                                            currentDisplay.getEmployeeName(),
+                                            currentDisplay.getStatus(),
+                                            currentDisplay.getTimeAgo()
+                                    );
+                                });
+                            }
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        checkNewCheckIn.start();
     }
 
     @FXML
