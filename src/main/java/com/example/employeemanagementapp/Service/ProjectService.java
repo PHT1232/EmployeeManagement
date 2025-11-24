@@ -28,6 +28,7 @@ public class ProjectService {
         list.forEach(projects -> {
             try {
                 ProjectDecorator projectDecorator = new ProjectDecorator();
+                double totalEarning = projects.getTotal_revenue() * (projects.getCommission_rate()/100);
                 ProjectDisplay projectDisplay = new ProjectDisplay.Builder()
                         .ProjectId(projects.getProject_id())
                         .ProjectName(projects.getProject_name())
@@ -35,7 +36,8 @@ public class ProjectService {
                         .EndDate(projects.getEnd_date())
                         .CommissionRate(projects.getCommission_rate())
                         .Revenue(projects.getTotal_revenue())
-                        .Status(projects.isIs_finished() ? "active" : "upcoming")
+                        .TotalEarnings(totalEarning)
+                        .Status(projects.getIs_finished() == 0 ? "active" : "completed")
                         .build();
 
                 projectDecorator.addNumberOfEmployee(projectDisplay, projects.getProject_id());
@@ -61,5 +63,9 @@ public class ProjectService {
     public void update(int id, List<Employee> list) throws Exception {
         ProjectDecorator projectDecorator = new ProjectDecorator();
         projectDecorator.addProjectAssignment(id, list);
+    }
+
+    public int update(Projects projects) throws Exception {
+        return reposistory.update(projects);
     }
 }

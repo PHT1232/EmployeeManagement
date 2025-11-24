@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="837.0" prefWidth="600.0" stylesheets="@styles/style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.employeemanagementapp.EditProjectController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="837.0" prefWidth="600.0" stylesheets="@styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.employeemanagementapp.EditProjectController">
     <top>
         <VBox prefHeight="87.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>
@@ -184,7 +184,7 @@
                         </VBox>
                     </children>
                 </HBox>
-            <ChoiceBox fx:id="is_finished" prefHeight="43.0" prefWidth="605.0" styleClass="button-regular">
+            <ChoiceBox fx:id="is_finished" disable="true" prefHeight="43.0" prefWidth="605.0" styleClass="button-regular">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" />
                </VBox.margin>

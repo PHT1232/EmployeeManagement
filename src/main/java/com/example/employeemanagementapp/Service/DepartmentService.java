@@ -49,9 +49,10 @@ public class DepartmentService {
 
     public int getTotalDepartment() {
         int total = 0;
+        String sql = "SELECT COUNT(1) as num FROM departments";
 
         try {
-            total = departmentRepository.totalRows();
+            total = departmentRepository.getNumberBySql(sql);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

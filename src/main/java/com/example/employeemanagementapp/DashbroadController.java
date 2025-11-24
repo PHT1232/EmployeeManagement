@@ -1,33 +1,22 @@
 package com.example.employeemanagementapp;
 
-import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Models.AttendanceDisplay;
+import com.example.employeemanagementapp.Models.RecentActivityDisplay;
+import com.example.employeemanagementapp.Models.Top10EmployeeDisplay;
 import com.example.employeemanagementapp.Service.AttendanceService;
 import com.example.employeemanagementapp.Service.EmployeeService;
 import com.example.employeemanagementapp.Translators.Translator;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Application;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import javafx.geometry.Insets;
-import java.text.NumberFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DashbroadController {
     @FXML
@@ -90,8 +79,10 @@ public class DashbroadController {
     private Text forth_num_label;
     @FXML
     private VBox activityContainer;
-
-
+    @FXML
+    private TableView<AttendanceDisplay> attendance_table;
+    @FXML
+    private TableView<Top10EmployeeDisplay> top10_table;
 
     private Translator translator = ApplicationLanguageSetter.getTranslator();
 
@@ -198,7 +189,109 @@ public class DashbroadController {
         activityContainer.getChildren().add(entryBox);
     }
 
-    private AttendanceDisplay currentDisplay = new AttendanceDisplay();
+    private void populateAttendanceTableColumn() {
+        TableColumn<AttendanceDisplay, String> nameCol = new TableColumn<>("Employee Name");
+        TableColumn<AttendanceDisplay, String> deptCol = new TableColumn<>("Department");
+        TableColumn<AttendanceDisplay, String> statusCol = new TableColumn<>("Status");
+        TableColumn<AttendanceDisplay, String> checkInCol = new TableColumn<>("Check In");
+        TableColumn<AttendanceDisplay, String> checkOutCol = new TableColumn<>("Check Out");
+
+        nameCol.setCellValueFactory(cellData ->
+                cellData.getValue().employeeNameProperty());
+
+        deptCol.setCellValueFactory(cellData ->
+                cellData.getValue().departmentProperty());
+
+        statusCol.setCellValueFactory(cellData ->
+                cellData.getValue().statusProperty());
+
+        checkInCol.setCellValueFactory(cellData ->
+                cellData.getValue().checkInProperty());
+
+        checkOutCol.setCellValueFactory(cellData ->
+                cellData.getValue().checkOutProperty());
+
+        attendance_table.getColumns().addAll(nameCol, deptCol, statusCol, checkInCol, checkOutCol);
+        attendance_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    }
+
+    private void populateTopEmployeeColumn() {
+        TableColumn<Top10EmployeeDisplay, String> nameCol = new TableColumn<>("Employee Name");
+        TableColumn<Top10EmployeeDisplay, String> deptCol = new TableColumn<>("Department");
+        TableColumn<Top10EmployeeDisplay, String> overtimeCol = new TableColumn<>("Overtime Hours");
+        TableColumn<Top10EmployeeDisplay, String> bonusCol = new TableColumn<>("Bonus Amount");
+
+// Bind columns to properties
+        nameCol.setCellValueFactory(cellData ->
+                cellData.getValue().employeeNameProperty());
+
+        deptCol.setCellValueFactory(cellData ->
+                cellData.getValue().departmentProperty());
+
+        overtimeCol.setCellValueFactory(cellData ->
+                cellData.getValue().overtimeHoursProperty());
+
+        bonusCol.setCellValueFactory(cellData ->
+                cellData.getValue().bonusAmountProperty());
+
+// Add to table
+        top10_table.getColumns().addAll(nameCol, deptCol, overtimeCol, bonusCol);
+        top10_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    }
+
+    private void populateAttendanceTable() throws Exception {
+        ObservableList<AttendanceDisplay> list = FXCollections.observableArrayList(attendanceService.getAttendanceList());
+        attendance_table.setItems(list);
+    }
+
+    private void populateTopTable() throws Exception {
+        ObservableList<Top10EmployeeDisplay> list = FXCollections.observableArrayList(employeeService.getTop10Employee());
+        top10_table.setItems(list);
+    }
+
+    private void addNewCheckInToTable() throws Exception {
+        attendance_table.getItems().addFirst(attendanceService.getNewCheckIn());
+    }
+
+    private void checkRecentActivity() {
+        Thread checkNewCheckIn = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        Thread.sleep(2000);
+                        RecentActivityDisplay attendanceDisplayFromDb = attendanceService.getFirstAttendance();
+                        if (currentDisplay == null) {
+                            currentDisplay = attendanceDisplayFromDb;
+                            addRecentActivity();
+                        } else if (attendanceDisplayFromDb != null) {
+                            if (attendanceDisplayFromDb.getId() != currentDisplay.getId()) {
+                                currentDisplay = attendanceDisplayFromDb;
+                                addNewCheckInToTable();
+                                addRecentActivity();
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        checkNewCheckIn.start();
+    }
+
+    private void addRecentActivity() {
+        javafx.application.Platform.runLater(() -> {
+            addActivity(
+                    currentDisplay.getEmployeeName(),
+                    currentDisplay.getStatus(),
+                    currentDisplay.getTimeAgo()
+            );
+        });
+    }
+
+    private RecentActivityDisplay currentDisplay;
     private AttendanceService attendanceService;
 
     @FXML
@@ -209,35 +302,37 @@ public class DashbroadController {
         if (!ApplicationLanguageSetter.getCurrentLanguage().equals("EN")) {
             translateText();
         }
+
         first_num_label.setText(String.valueOf(employeeService.getTotalEmployee()));
-        Thread checkNewCheckIn = new Thread(new Runnable() {
+        second_num_label.setText(String.valueOf(attendanceService.getTotalCheckIn()));
+        third_num_label.setText(String.valueOf(attendanceService.getTotalCheckOut()));
+
+        checkRecentActivity();
+        Thread populateAttendance = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    while (true) {
-                        Thread.sleep(1000);
-                        AttendanceDisplay attendanceDisplayFromDb = attendanceService.getFirstAttendance();
-                        if (attendanceDisplayFromDb != null) {
-                            if (attendanceDisplayFromDb.getId() != currentDisplay.getId()) {
-                                currentDisplay = attendanceDisplayFromDb;
-
-                                javafx.application.Platform.runLater(() -> {
-                                    addActivity(
-                                            currentDisplay.getEmployeeName(),
-                                            currentDisplay.getStatus(),
-                                            currentDisplay.getTimeAgo()
-                                    );
-                                });
-                            }
-                        }
-                    }
-                } catch (InterruptedException e) {
+                    populateAttendanceTableColumn();
+                    populateAttendanceTable();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        Thread populateEmployee = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    populateTopEmployeeColumn();
+                    populateTopTable();
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
         });
 
-        checkNewCheckIn.start();
+        populateAttendance.start();
+        populateEmployee.start();
     }
 
     @FXML

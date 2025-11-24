@@ -23,6 +23,20 @@ public class Reposistory<T> {
         }
     }
 
+    public Reposistory<T> Mapper(RowMapper<T> rowmapper) {
+        this.rowMapper = rowmapper;
+        return this;
+    }
+
+    public Reposistory<T> TableName(String tableName) {
+        this.tableName = tableName;
+        return this;
+    }
+
+    public Reposistory<T> build() {
+        return this;
+    }
+
     private PreparedStatement preparedInsertStatement(T entity) throws Exception {
         Class<?> entityType = entity.getClass();
         Field[] fields = entityType.getDeclaredFields();
@@ -90,20 +104,6 @@ public class Reposistory<T> {
     }
 
 
-    public Reposistory<T> Mapper(RowMapper<T> rowmapper) {
-        this.rowMapper = rowmapper;
-        return this;
-    }
-
-    public Reposistory<T> TableName(String tableName) {
-        this.tableName = tableName;
-        return this;
-    }
-
-    public Reposistory<T> build() {
-        return this;
-    }
-
     public List<T> findAll() throws Exception {
         List<T> list = new ArrayList<>();
         String sql = "SELECT * FROM " + tableName;
@@ -156,17 +156,16 @@ public class Reposistory<T> {
         return list;
     }
 
-    public int totalRows() throws Exception {
-        int totalRow = 0;
-        String sql = "SELECT COUNT(1) as num FROM " + tableName;
+    public int getNumberBySql(String sql) throws Exception {
+        int num = 0;
 
         try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql)) {
             while (rs.next()) {
-                totalRow = rs.getInt("num");
+                num = rs.getInt("num");
             }
         }
 
-        return totalRow;
+        return num;
     }
 
     public int update(T entity) throws Exception {

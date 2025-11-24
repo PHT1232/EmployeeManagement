@@ -46,6 +46,8 @@ public class AddProjectController {
     @FXML
     private Button save_button;
 
+    private Employee employee;
+
     private Translator translator = ApplicationLanguageSetter.getTranslator();
 
     private ProjectService projectService;
@@ -130,7 +132,7 @@ public class AddProjectController {
                 .End_date(Date.valueOf(enddatepicker.getValue()))
                 .Commission_rate(Double.parseDouble(commission_input.getText()))
                 .Total_revenue(Double.parseDouble(revenue_input.getText()))
-                .IsFinished(false).build();
+                .IsFinished(0).build();
 
         return projects;
     }

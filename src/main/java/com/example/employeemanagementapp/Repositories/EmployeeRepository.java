@@ -2,6 +2,8 @@ package com.example.employeemanagementapp.Repositories;
 
 import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.RowMapper;
+import com.example.employeemanagementapp.Mapper.Top10EmployeeMapper;
+import com.example.employeemanagementapp.Models.Top10EmployeeDisplay;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,46 +14,33 @@ public class EmployeeRepository extends Reposistory<Employee> {
         super();
     }
 
-    public ResultSet fetchMonthlyData(Date monthStart, Date monthEnd) throws Exception {
-        String sql = "SELECT e.employee_id, " +
-                "CONCAT(e.first_name, ' ', e.last_name) AS name, " +
-                "e.salary AS base_wage, " +
-                "a.check_in, a.check_out, a.attendance_date " +
-                "FROM employees e " +
-                "JOIN attendance a ON e.employee_id = a.employee_id " +
-                "WHERE a.attendance_date BETWEEN ? AND ? " +
-                "ORDER BY e.employee_id, a.attendance_date";
+    public List<Date> getHireDate() throws Exception {
+        List<Date> list = new ArrayList<>();
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setDate(1, monthStart);
-            ps.setDate(2, monthEnd);
+        String sql = "SELECT hire_date as date FROM " + tableName;
 
-            return ps.executeQuery();
-        }
-    }
-
-    public double fetchProjectBonusMonth(int id) throws Exception {
-        String sql = "SELECT project_bonus_month FROM Employees WHERE employee_id = ?";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-            double bonusMonth = rs.getDouble(0);
-            return bonusMonth;
-        }
-    }
-
-    public List<Employee> fetchTop10() throws Exception {
-        String sql = "SELECT employee_id, CONCAT(first_name, ' ', last_name) AS name, bonus_hours_month " +
-                "FROM employees " +
-                "ORDER BY bonus_hours_month DESC " +
-                "LIMIT 10";
-
-        List<Employee> list = new ArrayList<>();
-        try (Statement statement = connection.createStatement();ResultSet rs = statement.executeQuery(sql)) {
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql)) {
             while (rs.next()) {
-                list.add(rowMapper.mapRow(rs));
+                list.add(rs.getDate("date"));
+            }
+        }
+
+        return list;
+    }
+
+    public List<Top10EmployeeDisplay> getTop10Employee() throws Exception {
+        List<Top10EmployeeDisplay> list = new ArrayList<>();
+        String sql = "SELECT *,\n" +
+                "       SUM(a.overtime) AS total_overtime\n" +
+                "FROM employees e\n" +
+                "JOIN attendance a ON e.employee_id = a.employee_id\n" +
+                "GROUP BY e.employee_id\n" +
+                "ORDER BY total_overtime DESC";
+
+        RowMapper<Top10EmployeeDisplay> mapper = new Top10EmployeeMapper();
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql)) {
+            while (rs.next()) {
+                list.add(mapper.mapRow(rs));
             }
         }
 

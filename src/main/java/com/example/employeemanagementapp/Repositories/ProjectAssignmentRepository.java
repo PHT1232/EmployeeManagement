@@ -16,7 +16,6 @@ public class ProjectAssignmentRepository extends Reposistory<ProjectAssignments>
     }
 
     public int countEmployeeByProjectId(int id) throws Exception {
-        List<ProjectAssignments> list = new ArrayList<>();
         String sql = "SELECT COUNT(employee_id) AS num FROM " + tableName + " WHERE project_id = " + id;
         int numberOfEmployee = 0;
 

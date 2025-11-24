@@ -2,6 +2,7 @@ package com.example.employeemanagementapp;
 
 import com.example.employeemanagementapp.Connection.DatabaseConnection;
 import com.example.employeemanagementapp.Models.WageDisplay;
+import com.example.employeemanagementapp.Service.AttendanceService;
 import com.example.employeemanagementapp.Service.EmployeeService;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.sql.*;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -50,19 +52,27 @@ public class KPIController {
     @FXML
     private ScrollPane main_scrollpane;
 
-    // Header label
     @FXML
     private Label project_overview_label;
 
-    // Action button
+    @FXML
+    private Label first_num_label;
+
+    @FXML
+    private Label second_num_label;
+
+    @FXML
+    private Label third_num_label;
+
+    @FXML
+    private Label forth_num_label;
+
     @FXML
     private Button add_project_button;
 
-    // Table
     @FXML
     private TableView<WageDisplay> project_table;
 
-    // Pagination buttons
     @FXML
     private Button first_prev_button;
 
@@ -238,12 +248,19 @@ public class KPIController {
     }
 
     private EmployeeService employeeService;
+    private AttendanceService attendanceService;
 
     @FXML
     protected void initialize() {
         main_scrollpane.setFitToWidth(true);
         try {
             employeeService = new EmployeeService();
+            attendanceService = new AttendanceService();
+
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            first_num_label.setText(formatter.format(employeeService.getTotalCompensation()));;
+            second_num_label.setText(formatter.format(employeeService.getTotalBonus()));
+            forth_num_label.setText(String.valueOf(attendanceService.getTotalOvertime()) + "h");
 
             Thread thread = new Thread(new Runnable() {
                 @Override

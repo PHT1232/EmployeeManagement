@@ -1,91 +1,40 @@
 package com.example.employeemanagementapp;
 
-import com.example.employeemanagementapp.Connection.DatabaseConnection;
-import com.example.employeemanagementapp.Entities.Departments;
-import com.example.employeemanagementapp.Entities.Employee;
-import com.example.employeemanagementapp.Mapper.EmployeeMapper;
 import com.example.employeemanagementapp.Models.DepartmentDisplay;
 import com.example.employeemanagementapp.Models.EmployeeDisplay;
-import com.example.employeemanagementapp.Repositories.EmployeeRepository;
 import com.example.employeemanagementapp.Service.DepartmentService;
 import com.example.employeemanagementapp.Service.EmployeeService;
 import com.example.employeemanagementapp.Translators.Translator;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EmployeeController {
-    @FXML
-    private Button dashbroad_nav_button;
-    @FXML
-    private Button wages_nav_button;
-    @FXML
-    private Button project_nav_button;
-    @FXML
-    private Button employees_nav_button;
-    @FXML
-    private Button payment_nav_button;
-    @FXML
-    private Button all_button_filter;
-    @FXML
-    private Button checked_in_button_filter;
-    @FXML
-    private Button checked_out_button_filter;
-
     @FXML
     private ScrollPane main_scrollpane;
     @FXML
     private BorderPane main_borderpane;
 
     @FXML
-    private TextField employeeid;
-    @FXML
-    private TextField first_name;
-    @FXML
-    private TextField last_name;
-    @FXML
-    private TextField email;
-    @FXML
-    private TextField phone;
-    @FXML
-    private TextField position;
-    @FXML
-    private TextField salary;
-    @FXML
-    private TextField department_id;
-
-
-    @FXML
     private ChoiceBox<String> department_filter_box;
     @FXML
-    private ChoiceBox<String> language_choice_box;
-
-
-    @FXML
     private DatePicker hire_date;
-
-
     @FXML
     private Label main_header_label;
     @FXML
@@ -229,6 +178,10 @@ public class EmployeeController {
 
         TableColumn<EmployeeDisplay, String> positionCol = new TableColumn<>("Position");
 
+        TableColumn<EmployeeDisplay, Double> salaryCol = new TableColumn<>("Salary");
+
+        TableColumn<EmployeeDisplay, String> tenure = new TableColumn<>("Tenure");
+
         TableColumn<EmployeeDisplay, Date> startDateCol = new TableColumn<>("Start Date");
 
         idCol.setCellValueFactory(cellData ->
@@ -243,11 +196,17 @@ public class EmployeeController {
         positionCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getPosition()));
 
+        salaryCol.setCellValueFactory(cellData ->
+                new SimpleDoubleProperty(cellData.getValue().getSalary()).asObject());
+
+        tenure.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getHire_date()));
+
         startDateCol.setCellValueFactory(cellData ->
                 new SimpleObjectProperty<>(cellData.getValue().getStartDate()));
 
 
-        employee_table.getColumns().addAll(idCol, nameCol, roleCol, positionCol, startDateCol);
+        employee_table.getColumns().addAll(idCol, nameCol, roleCol, tenure, positionCol, salaryCol, startDateCol);
         employee_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
     }
@@ -257,6 +216,17 @@ public class EmployeeController {
         if (!ApplicationLanguageSetter.getCurrentLanguage().equals("EN")) {
             translateText();
         }
+
+        employee_table.setRowFactory(tv -> {
+            TableRow<EmployeeDisplay> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getClickCount() == 2) {
+                    EmployeeDisplay clicked = row.getItem();
+                    openEditModal(clicked);
+                }
+            });
+            return row;
+        });
 
         try {
             Thread departMentThread = new Thread(new Runnable() {
@@ -293,6 +263,7 @@ public class EmployeeController {
         main_scrollpane.setFitToWidth(true);
         first_num_label.setText(String.valueOf(employeeService.getTotalEmployee()));
         second_num_label.setText(String.valueOf(departmentService.getTotalDepartment()));
+        third_num_label.setText(employeeService.avgTenure() + " years");
     }
 
     int currentDepartmentPage = 1;
@@ -345,10 +316,9 @@ public class EmployeeController {
         }
     }
 
-    @FXML
-    protected void openAddEmployeeModal(ActionEvent event) {
+    private void openFxmlModal(String filename) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("add_employee.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(filename));
             Parent root = loader.load();
 
             Stage stage = new Stage();
@@ -359,42 +329,35 @@ public class EmployeeController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void openEditModal(EmployeeDisplay employeeDisplay) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("edit_employee.fxml"));
+            Parent root = loader.load();
+
+            EditEmployeeController editEmployeeController = loader.getController();
+
+            editEmployeeController.initEmployee(employeeDisplay);
+            editEmployeeController.initInput();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    protected void openAddEmployeeModal(ActionEvent event) {
+        openFxmlModal("add_employee.fxml");
     }
 
     @FXML
     protected void openAddDepartmentModal(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("add_department.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setResizable(false);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    protected void onAllFilterClick() {
-        all_button_filter.getStyleClass().setAll("button-selected");
-        checked_in_button_filter.getStyleClass().setAll("button-regular");
-        checked_out_button_filter.getStyleClass().setAll("button-regular");
-    }
-
-    @FXML
-    protected void onCheckedInFilterClick() {
-        all_button_filter.getStyleClass().setAll("button-regular");
-        checked_in_button_filter.getStyleClass().setAll("button-selected");
-        checked_out_button_filter.getStyleClass().setAll("button-regular");
-    }
-
-    @FXML
-    protected void onCheckedOutFilterClick() {
-        all_button_filter.getStyleClass().setAll("button-regular");
-        checked_in_button_filter.getStyleClass().setAll("button-regular");
-        checked_out_button_filter.getStyleClass().setAll("button-selected");
+        openFxmlModal("add_department.fxml");
     }
 }

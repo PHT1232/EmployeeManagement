@@ -1,36 +1,57 @@
 package com.example.employeemanagementapp.Models;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 import java.sql.Date;
 
 public class EmployeeDisplay {
+    private IntegerProperty employeeId = new SimpleIntegerProperty();
     private StringProperty employeeName = new SimpleStringProperty();
     private StringProperty contact = new SimpleStringProperty();
     private StringProperty role = new SimpleStringProperty();
+    private StringProperty hire_date = new SimpleStringProperty();
     private StringProperty position = new SimpleStringProperty();
+    private DoubleProperty salary = new SimpleDoubleProperty();
     private ObjectProperty<Date> startDate = new SimpleObjectProperty<>();
 
     private EmployeeDisplay(Builder builder) {
+        employeeId = builder.employeeId;
         employeeName = builder.employeeName;
         contact = builder.contact;
+        hire_date = builder.hire_date;
+        salary = builder.salary;
         role = builder.role;
         position = builder.position;
         startDate = builder.startDate;
     }
 
     public static class Builder {
+        private IntegerProperty employeeId = new SimpleIntegerProperty();
         private StringProperty employeeName = new SimpleStringProperty();
         private StringProperty contact = new SimpleStringProperty();
+        private StringProperty hire_date = new SimpleStringProperty();
         private StringProperty role = new SimpleStringProperty();
         private StringProperty position = new SimpleStringProperty();
+        private DoubleProperty salary = new SimpleDoubleProperty();
         private ObjectProperty<Date> startDate = new SimpleObjectProperty<>();
+
+        public Builder EmployeeId(int employeeId) {
+            this.employeeId.set(employeeId);
+            return this;
+        }
 
         public Builder EmployeeName(String employeeName) {
             this.employeeName.set(employeeName);
+            return this;
+        }
+
+        public Builder Hire_date(String hire_date) {
+            this.hire_date.set(hire_date);
+            return this;
+        }
+
+        public Builder Salary(double salary) {
+            this.salary.set(salary);
             return this;
         }
 
@@ -57,6 +78,42 @@ public class EmployeeDisplay {
         public EmployeeDisplay build() {
             return new EmployeeDisplay(this);
         }
+    }
+
+    public int getEmployeeId() {
+        return employeeId.get();
+    }
+
+    public IntegerProperty employeeIdProperty() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(int employeeId) {
+        this.employeeId.set(employeeId);
+    }
+
+    public double getSalary() {
+        return salary.get();
+    }
+
+    public DoubleProperty salaryProperty() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary.set(salary);
+    }
+
+    public String getHire_date() {
+        return hire_date.get();
+    }
+
+    public StringProperty hire_dateProperty() {
+        return hire_date;
+    }
+
+    public void setHire_date(String hire_date) {
+        this.hire_date.set(hire_date);
     }
 
     public String getEmployeeName() {

@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -72,7 +73,9 @@ public class EditProjectController {
     private EmployeeService employeeService;
 
     private Projects projects;
-    
+
+    private ObservableList<Employee> employees = null;
+
     private int current = 1;
 
     private void initChoiceBox() {
@@ -140,6 +143,13 @@ public class EditProjectController {
         if (enddatepicker.getValue() == null) {
             return false;
         }
+//        List<Employee> diff2 = employees.stream()
+//                .filter(e -> !current_selected_member.getItems().contains(e))
+//                .toList();
+//
+//        if (diff2.isEmpty()) {
+//            return false;
+//        }
 
         return true;
     }
@@ -150,7 +160,7 @@ public class EditProjectController {
                 .Project_name(projectDisplay.getProjectName())
                 .Start_date(projectDisplay.getStartDate())
                 .End_date(projectDisplay.getEndDate())
-                .IsFinished(projectDisplay.getStatus().equals("active") ? true : false)
+                .IsFinished(projectDisplay.getStatus().equals("active") ? 0 : 1)
                 .Total_revenue(projectDisplay.getRevenue())
                 .Commission_rate(projectDisplay.commissionRateProperty())
                 .build();
@@ -158,7 +168,6 @@ public class EditProjectController {
     }
 
     public void initInput() {
-        ObservableList<Employee> employees = null;
         try {
             employees = FXCollections.observableArrayList(projectService.getEmployee(projects.getProject_id()));
         } catch (Exception e) {
@@ -173,7 +182,7 @@ public class EditProjectController {
         project_name_input.setText(projects.getProject_name());
         startdatepicker.setValue(projects.getStart_date().toLocalDate());
         enddatepicker.setValue(projects.getEnd_date().toLocalDate());
-        is_finished.setValue(projects.isIs_finished() ? "Completed" : "Unfinished");
+        is_finished.setValue(projects.getIs_finished() == 1 ? "Completed" : "Unfinished");
     }
 
     private Projects mapProject() {
@@ -182,14 +191,6 @@ public class EditProjectController {
         projects.setEnd_date(Date.valueOf(enddatepicker.getValue()));
         projects.setCommission_rate(Double.parseDouble(commission_input.getText()));
         projects.setTotal_revenue(Double.parseDouble(revenue_input.getText()));
-
-//        projects = new Projects.Builder()
-//                .Project_name(project_name_input.getText())
-//                .Start_date(Date.valueOf(startdatepicker.getValue()))
-//                .End_date(Date.valueOf(enddatepicker.getValue()))
-//                .Commission_rate(Double.parseDouble(commission_input.getText()))
-//                .Total_revenue(Double.parseDouble(revenue_input.getText()))
-//                .IsFinished(false).build();
 
         return projects;
     }
@@ -234,6 +235,16 @@ public class EditProjectController {
                         current_selected_member.getItems().add(newValue);
                 }
             });
+
+            is_finished.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                        if (newValue.equals("Completed")) {
+                            projects.setIs_finished(1);
+                        } else {
+                            projects.setIs_finished(0);
+                        }
+                    });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -244,8 +255,14 @@ public class EditProjectController {
     @FXML
     protected void saveButton() {
         try {
-            projectService.update(projects.getProject_id(), current_selected_member.getItems());
-
+            if (project_name_input.isDisabled()) {
+                projectService.update(projects.getProject_id(), current_selected_member.getItems());
+            } else {
+                if (projectService.update(mapProject()) > 0) {
+                    Stage stage = (Stage) save_button.getScene().getWindow();
+                    stage.close();
+                }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -258,5 +275,6 @@ public class EditProjectController {
         enddatepicker.setDisable(!enddatepicker.isDisabled());
         commission_input.setDisable(!commission_input.isDisabled());
         revenue_input.setDisable(!revenue_input.isDisabled());
+        is_finished.setDisable(!is_finished.isDisabled());
     }
 }
