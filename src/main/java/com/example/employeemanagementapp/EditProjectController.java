@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EditProjectController {
     @FXML
@@ -74,7 +75,7 @@ public class EditProjectController {
 
     private Projects projects;
 
-    private ObservableList<Employee> employees = null;
+    private List<Employee> initialEmployeeList = new ArrayList<>();
 
     private int current = 1;
 
@@ -143,13 +144,6 @@ public class EditProjectController {
         if (enddatepicker.getValue() == null) {
             return false;
         }
-//        List<Employee> diff2 = employees.stream()
-//                .filter(e -> !current_selected_member.getItems().contains(e))
-//                .toList();
-//
-//        if (diff2.isEmpty()) {
-//            return false;
-//        }
 
         return true;
     }
@@ -168,8 +162,24 @@ public class EditProjectController {
     }
 
     public void initInput() {
+        ObservableList<Employee> employees =null;
         try {
-            employees = FXCollections.observableArrayList(projectService.getEmployee(projects.getProject_id()));
+            initialEmployeeList = projectService.getEmployee(projects.getProject_id());
+            employees = FXCollections.observableArrayList(initialEmployeeList);
+
+            ObservableList<Employee> items = null;
+            if (!initialEmployeeList.isEmpty()) {
+                int[] array = new int[initialEmployeeList.size()];
+                for (int i = 0; i < initialEmployeeList.size(); i++) {
+                    array[i] = initialEmployeeList.get(i).getEmployee_id();
+                }
+                items = FXCollections.observableArrayList(employeeService.fetchPaginationWithDifferentId(15, current, array));
+            } else {
+                items = FXCollections.observableArrayList(employeeService.fetchList(15, current));
+            }
+            employee_for_select_list.setItems(items);
+            employee_for_select_list.getItems().add(new Employee.Builder().Email("Show more").First_name("...").Last_name("").build());
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -206,11 +216,7 @@ public class EditProjectController {
             employeeService = new EmployeeService();
             projectService = new ProjectService();
             
-            ObservableList<Employee> items = FXCollections.observableArrayList(employeeService.fetchList(10, current));
 
-            employee_for_select_list.setItems(items);
-            employee_for_select_list.getItems().add(new Employee.Builder().Email("Show more").First_name("...").Last_name("").build());
-            
             search_input.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
@@ -223,8 +229,10 @@ public class EditProjectController {
                 @Override
                 public void changed(ObservableValue<? extends Employee> observableValue, Employee oldValue, Employee newValue) {
                     if (newValue != null) {
-                        current_selected_member.getSelectionModel().clearSelection();
-                        current_selected_member.getItems().remove(newValue);
+                        javafx.application.Platform.runLater(() -> {
+                            current_selected_member.getSelectionModel().clearSelection();
+                            current_selected_member.getItems().remove(newValue);
+                        });
                     }
                 }
             });
@@ -232,7 +240,7 @@ public class EditProjectController {
             employee_for_select_list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
                 @Override
                 public void changed(ObservableValue<? extends Employee> observableValue, Employee oldValue, Employee newValue) {
-                        current_selected_member.getItems().add(newValue);
+                    current_selected_member.getItems().add(newValue);
                 }
             });
 
@@ -255,13 +263,25 @@ public class EditProjectController {
     @FXML
     protected void saveButton() {
         try {
-            if (project_name_input.isDisabled()) {
-                projectService.update(projects.getProject_id(), current_selected_member.getItems());
-            } else {
-                if (projectService.update(mapProject()) > 0) {
-                    Stage stage = (Stage) save_button.getScene().getWindow();
-                    stage.close();
-                }
+            List<Employee> diff2 = initialEmployeeList.stream()
+                    .filter(e -> !current_selected_member.getItems().contains(e))
+                    .toList();
+
+            List<Employee> addDiff = current_selected_member.getItems().stream()
+                    .filter(e -> !initialEmployeeList.contains(e))
+                    .toList();
+
+            if (!addDiff.isEmpty()) {
+                projectService.addEmployeeToProject(projects.getProject_id(), addDiff);
+            }
+
+            if (!diff2.isEmpty()) {
+                diff2.forEach(employee -> projectService.deleteEmployeeFromProject(projects.getProject_id(), employee.getEmployee_id()));
+            }
+
+            if (projectService.update(mapProject()) > 0) {
+                Stage stage = (Stage) save_button.getScene().getWindow();
+                stage.close();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -276,5 +296,9 @@ public class EditProjectController {
         commission_input.setDisable(!commission_input.isDisabled());
         revenue_input.setDisable(!revenue_input.isDisabled());
         is_finished.setDisable(!is_finished.isDisabled());
+        current_selected_member.setDisable(!current_selected_member.isDisabled());
+        employee_for_select_list.setDisable(!employee_for_select_list.isDisabled());
+        search_input.setDisable(!search_input.isDisabled());
+        save_button.setDisable(!save_button.isDisabled());
     }
 }

@@ -39,6 +39,14 @@ public class ProjectDecorator {
         });
     }
 
+    public int deleteEmployeeFromProject(ProjectAssignments projectAssignments) {
+        try {
+            return repository.delete(projectAssignments);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<Employee> getEmployee(int id) throws Exception {
         return repository.getEmployeeByProjectId(id);
     }

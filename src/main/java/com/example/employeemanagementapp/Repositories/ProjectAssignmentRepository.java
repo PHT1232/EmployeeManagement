@@ -5,6 +5,7 @@ import com.example.employeemanagementapp.Entities.ProjectAssignments;
 import com.example.employeemanagementapp.Mapper.EmployeeMapper;
 import com.example.employeemanagementapp.Mapper.RowMapper;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -40,5 +41,12 @@ public class ProjectAssignmentRepository extends Reposistory<ProjectAssignments>
         }
 
         return list;
+    }
+
+    public int delete(ProjectAssignments entity) throws Exception {
+        String query = "DELETE FROM " + tableName + " WHERE project_id = " + entity.getProject_id() + " AND employee_id = " + entity.getEmployee_id();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            return statement.executeUpdate();
+        }
     }
 }

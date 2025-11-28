@@ -211,7 +211,6 @@ public class AddEmployeeController {
                 Employee employee = buildEmployee();
                 if (employeeService.addEmployee(employee)>0) {
                     Stage stage = (Stage) save_button.getScene().getWindow();
-
                     stage.close();
                 }
             }

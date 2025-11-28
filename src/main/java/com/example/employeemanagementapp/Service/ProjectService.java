@@ -1,6 +1,7 @@
 package com.example.employeemanagementapp.Service;
 
 import com.example.employeemanagementapp.Entities.Employee;
+import com.example.employeemanagementapp.Entities.ProjectAssignments;
 import com.example.employeemanagementapp.Entities.Projects;
 import com.example.employeemanagementapp.Mapper.ProjectMapper;
 import com.example.employeemanagementapp.Models.ProjectDisplay;
@@ -60,9 +61,14 @@ public class ProjectService {
         return reposistory.insert(projects);
     }
 
-    public void update(int id, List<Employee> list) throws Exception {
+    public void addEmployeeToProject(int id, List<Employee> list) throws Exception {
         ProjectDecorator projectDecorator = new ProjectDecorator();
         projectDecorator.addProjectAssignment(id, list);
+    }
+
+    public int deleteEmployeeFromProject(int projectId, int employeeId) {
+        ProjectDecorator projectDecorator = new ProjectDecorator();
+        return projectDecorator.deleteEmployeeFromProject(new ProjectAssignments(projectId,employeeId, ""));
     }
 
     public int update(Projects projects) throws Exception {

@@ -34,8 +34,6 @@ public class MainController {
     private Button project_nav_button;
     @FXML
     private Button employees_nav_button;
-    @FXML
-    private Button payment_nav_button;
 
     @FXML
     private ChoiceBox<String> language_choice_box;
@@ -59,7 +57,6 @@ public class MainController {
         wages_nav_button.getStyleClass().setAll("button", "nav_button");
         project_nav_button.getStyleClass().setAll("button", "nav_button");
         employees_nav_button.getStyleClass().setAll("button", "nav_button");
-        payment_nav_button.getStyleClass().setAll("button", "nav_button");
     }
 
     private void initChoiceBox() {
@@ -102,7 +99,6 @@ public class MainController {
         wages_nav_button.setText(translator.translate(wages_nav_button.getText()));
         project_nav_button.setText(translator.translate(project_nav_button.getText()));
         employees_nav_button.setText(translator.translate(employees_nav_button.getText()));
-        payment_nav_button.setText(translator.translate(payment_nav_button.getText()));
     }
 
     @FXML

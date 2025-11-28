@@ -8,6 +8,7 @@ import java.sql.Date;
 public class DepartmentDisplay {
     private IntegerProperty department_id = new SimpleIntegerProperty();
     private StringProperty department_name = new SimpleStringProperty();
+    private IntegerProperty manager_id = new SimpleIntegerProperty();
     private StringProperty manager = new SimpleStringProperty();
     private ObjectProperty<Date> created_at = new SimpleObjectProperty<>();
     private ObjectProperty<Date> updated_at = new SimpleObjectProperty<>();
@@ -16,6 +17,7 @@ public class DepartmentDisplay {
         department_id = builder.department_id;
         department_name = builder.department_name;
         manager = builder.manager;
+        manager_id = builder.manager_id;
         created_at = builder.created_at;
         updated_at = builder.updated_at;
     }
@@ -23,6 +25,7 @@ public class DepartmentDisplay {
     public static class Builder {
         private IntegerProperty department_id = new SimpleIntegerProperty();
         private StringProperty department_name = new SimpleStringProperty();
+        private IntegerProperty manager_id = new SimpleIntegerProperty();
         private StringProperty manager = new SimpleStringProperty();
         private ObjectProperty<Date> created_at = new SimpleObjectProperty<>();
         private ObjectProperty<Date> updated_at = new SimpleObjectProperty<>();
@@ -34,6 +37,11 @@ public class DepartmentDisplay {
 
         public Builder Department_name(String department_name) {
             this.department_name.set(department_name);
+            return this;
+        }
+
+        public Builder Manager_id(int manager_id) {
+            this.manager_id.set(manager_id);
             return this;
         }
 
@@ -55,6 +63,18 @@ public class DepartmentDisplay {
         public DepartmentDisplay build() {
             return new DepartmentDisplay(this);
         }
+    }
+
+    public int getManager_id() {
+        return manager_id.get();
+    }
+
+    public IntegerProperty manager_idProperty() {
+        return manager_id;
+    }
+
+    public void setManager_id(int manager_id) {
+        this.manager_id.set(manager_id);
     }
 
     public int getDepartment_id() {

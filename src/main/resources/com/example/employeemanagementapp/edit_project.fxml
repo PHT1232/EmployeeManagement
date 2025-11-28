@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="837.0" prefWidth="600.0" stylesheets="@styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.employeemanagementapp.EditProjectController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="779.0" stylesheets="@styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.employeemanagementapp.EditProjectController">
     <top>
         <VBox prefHeight="87.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>
@@ -196,21 +196,24 @@
                         <Insets left="10.0" />
                      </VBox.margin>
                   </Label>
-                  <ListView fx:id="current_selected_member" prefHeight="160.0" prefWidth="600.0">
+                  <TextField fx:id="search_input" disable="true" prefHeight="38.0" prefWidth="166.0" promptText="Enter employee name" styleClass="textfield_css">
                      <VBox.margin>
-                        <Insets left="10.0" right="10.0" top="10.0" />
-                     </VBox.margin>
-                  </ListView>
-                  <TextField fx:id="search_input" prefHeight="38.0" prefWidth="166.0" promptText="Enter employee name" styleClass="textfield_css">
-                     <VBox.margin>
-                        <Insets left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
                      </VBox.margin>
                   </TextField>
-                  <ListView fx:id="employee_for_select_list" prefHeight="202.0" prefWidth="600.0">
+                  <HBox prefHeight="171.0" prefWidth="853.0">
+                     <children>
+                        <ListView fx:id="current_selected_member" disable="true" prefHeight="160.0" prefWidth="600.0">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </ListView>
+                        <ListView fx:id="employee_for_select_list" disable="true" prefHeight="202.0" prefWidth="600.0" />
+                     </children>
                      <VBox.margin>
-                        <Insets left="10.0" right="10.0" top="10.0" />
+                        <Insets left="10.0" right="10.0" />
                      </VBox.margin>
-                  </ListView>
+                  </HBox>
                </children>
             </VBox>
             </children>
@@ -219,9 +222,9 @@
     <bottom>
         <VBox alignment="CENTER" prefHeight="74.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                      <Button fx:id="save_button" mnemonicParsing="false" onAction="#saveButton" prefHeight="43.0" prefWidth="306.0" styleClass="button-selected" text="Save">
+                      <Button fx:id="save_button" disable="true" mnemonicParsing="false" onAction="#saveButton" prefHeight="43.0" prefWidth="306.0" styleClass="button-selected" text="Save">
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>

@@ -46,4 +46,27 @@ public class EmployeeRepository extends Reposistory<Employee> {
 
         return list;
     }
+
+    public List<Employee> fetchPaginationWithDifferentId(int numOfRow, int offset, int[] employeesId) throws Exception {
+        List<Employee> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM " + tableName + " WHERE");
+
+        for (int i = 0; i < employeesId.length; i++) {
+            sql.append(" employee_id <> " + employeesId[i]);
+            if (i < employeesId.length - 1) {
+                sql.append(" AND");
+            }
+        }
+
+        sql.append(" LIMIT " + numOfRow + " OFFSET " + offset);
+
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql.toString())) {
+            while (rs.next()) {
+                list.add(rowMapper.mapRow(rs));
+            }
+        }
+
+        return list;
+    }
 }

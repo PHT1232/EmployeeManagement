@@ -1,6 +1,8 @@
 package com.example.employeemanagementapp.Service;
 
+import com.example.employeemanagementapp.Entities.DepartmentAssignments;
 import com.example.employeemanagementapp.Entities.Departments;
+import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Mapper.DepartmentMapper;
 import com.example.employeemanagementapp.Models.DepartmentDisplay;
 import com.example.employeemanagementapp.Repositories.DepartmentRepository;
@@ -36,6 +38,10 @@ public class DepartmentService {
         return departments;
     }
 
+    public int insert(Departments departments) throws Exception {
+        return departmentRepository.insert(departments);
+    }
+
     public Departments findDepartmentByEmployeeId(int id) {
         Departments departments = null;
         try {
@@ -45,6 +51,16 @@ public class DepartmentService {
         }
 
         return departments;
+    }
+
+    public void addEmployeeToDepartment(int id, List<Employee> employeeId) {
+        DepartmentDecorator departmentDecorator = null;
+        try {
+            departmentDecorator = new DepartmentDecorator();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        departmentDecorator.addEmployeeToDepartment(id, employeeId);
     }
 
     public int getTotalDepartment() {
@@ -70,6 +86,7 @@ public class DepartmentService {
                 DepartmentDisplay departmentDisplay = new DepartmentDisplay.Builder()
                         .Department_id(departments.getDepartment_id())
                         .Department_name(departments.getDepartment_name())
+                        .Manager_id(departments.getManager_id())
                         .Created_at(departments.getCreated_at())
                         .Updated_at(departments.getUpdated_at())
                         .build();
@@ -83,5 +100,34 @@ public class DepartmentService {
         });
 
         return displayList;
+    }
+
+    public List<Employee> getEmployee(int id) {
+        DepartmentDecorator departmentDecorator = null;
+        try {
+            departmentDecorator = new DepartmentDecorator();
+
+            return departmentDecorator.getEmployee(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int update(Departments departments) {
+        try {
+            return departmentRepository.update(departments);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int deleteEmployeeFromDepartment(int departmentId, int employeeId) {
+        DepartmentDecorator departmentDecorator = null;
+        try {
+            departmentDecorator = new DepartmentDecorator();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return departmentDecorator.deleteEmployeeFromDepartment(new DepartmentAssignments(departmentId, employeeId));
     }
 }

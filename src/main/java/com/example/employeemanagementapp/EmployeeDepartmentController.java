@@ -1,5 +1,6 @@
 package com.example.employeemanagementapp;
 
+import com.example.employeemanagementapp.Entities.Employee;
 import com.example.employeemanagementapp.Models.DepartmentDisplay;
 import com.example.employeemanagementapp.Models.EmployeeDisplay;
 import com.example.employeemanagementapp.Service.DepartmentService;
@@ -24,8 +25,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
-public class EmployeeController {
+public class EmployeeDepartmentController {
     @FXML
     private ScrollPane main_scrollpane;
     @FXML
@@ -69,11 +74,21 @@ public class EmployeeController {
     private Label third_num_label;
     @FXML
     private Label forth_num_label;
-
+    @FXML
+    private Label department_page_size;
+    @FXML
+    private Label department_current_page;
+    @FXML
+    private Label employee_page_size;
+    @FXML
+    private Label employee_current_page;
     @FXML
     private TableView employee_table;
     @FXML
     private TableView department_table;
+
+    private int totalEmployeePageSize;
+    private int totalDepartmentPageSize;
 
     private DepartmentService departmentService;
 
@@ -83,7 +98,7 @@ public class EmployeeController {
 
     int currentEmployeePage = 1;
 
-    public EmployeeController() throws Exception {
+    public EmployeeDepartmentController() throws Exception {
 
         departmentService = new DepartmentService();
         employeeService = new EmployeeService();
@@ -190,9 +205,6 @@ public class EmployeeController {
         nameCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getContact()));
 
-        roleCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getRole()));
-
         positionCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getPosition()));
 
@@ -206,7 +218,7 @@ public class EmployeeController {
                 new SimpleObjectProperty<>(cellData.getValue().getStartDate()));
 
 
-        employee_table.getColumns().addAll(idCol, nameCol, roleCol, tenure, positionCol, salaryCol, startDateCol);
+        employee_table.getColumns().addAll(idCol, nameCol, tenure, positionCol, salaryCol, startDateCol);
         employee_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
     }
@@ -222,7 +234,44 @@ public class EmployeeController {
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getClickCount() == 2) {
                     EmployeeDisplay clicked = row.getItem();
-                    openEditModal(clicked);
+                    openEmployeeEditModal(clicked);
+                }
+            });
+            return row;
+        });
+
+        department_table.setRowFactory(tv -> {
+            TableRow<DepartmentDisplay> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getClickCount() == 2) {
+                    DepartmentDisplay clicked = row.getItem();
+                    openDepartmentEditModal(clicked);
+                }
+                if (!row.isEmpty() && event.getClickCount() == 1) {
+                    DepartmentDisplay clicked = row.getItem();
+                    List<EmployeeDisplay> displayList = new ArrayList<>();
+                    departmentService.getEmployee(clicked.getDepartment_id()).forEach(employee -> {
+                        LocalDate localDate = LocalDate.now();
+                        Period period = Period.between(employee.getHire_date().toLocalDate(), localDate);
+
+                        EmployeeDisplay employeeDisplay = new EmployeeDisplay.Builder()
+                                .EmployeeId(employee.getEmployee_id())
+                                .EmployeeName(employee.getFirst_name() + " " + employee.getLast_name())
+                                .Contact(employee.getEmail() + "\n" + employee.getPhone())
+                                .Position(employee.getPosition())
+                                .Salary(employee.getSalary())
+                                .Hire_date(period.getYears() + " Years")
+                                .StartDate(employee.getHire_date()).build();
+
+                        displayList.add(employeeDisplay);
+                    });
+
+                    ObservableList<EmployeeDisplay> list = FXCollections.observableArrayList(displayList);
+
+                    javafx.application.Platform.runLater(() -> {
+                        select_department_label.setText(clicked.getDepartment_name() + " Department");
+                        employee_table.setItems(list);
+                    });
                 }
             });
             return row;
@@ -261,8 +310,15 @@ public class EmployeeController {
         }
 
         main_scrollpane.setFitToWidth(true);
-        first_num_label.setText(String.valueOf(employeeService.getTotalEmployee()));
-        second_num_label.setText(String.valueOf(departmentService.getTotalDepartment()));
+        totalDepartmentPageSize = departmentService.getTotalDepartment();
+        totalEmployeePageSize = employeeService.getTotalEmployee();
+
+        first_num_label.setText(String.valueOf(totalEmployeePageSize));
+        second_num_label.setText(String.valueOf(totalDepartmentPageSize));
+        department_current_page.setText(String.valueOf(currentDepartmentPage));
+        department_page_size.setText(" / " + (totalDepartmentPageSize/10 + 1));
+        employee_current_page.setText(String.valueOf(currentEmployeePage));
+        employee_page_size.setText(" / " + (totalEmployeePageSize/10 + 1));
         third_num_label.setText(employeeService.avgTenure() + " years");
     }
 
@@ -270,49 +326,61 @@ public class EmployeeController {
 
     @FXML
     protected void prevDepartment() {
-        currentDepartmentPage--;
-        try {
-            if (currentDepartmentPage > 0) {
-                populateDepartmentTable();
-            } else {
-                currentDepartmentPage = 1;
+        if (currentDepartmentPage > 1) {
+            currentDepartmentPage--;
+            department_current_page.setText(String.valueOf(currentDepartmentPage));
+            try {
+                if (currentDepartmentPage > 0) {
+                    populateDepartmentTable();
+                } else {
+                    currentDepartmentPage = 1;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
     @FXML
     protected void nextDepartment() {
-        currentDepartmentPage++;
-        try {
-            populateDepartmentTable();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (currentDepartmentPage < (totalDepartmentPageSize / 10 + 1) ) {
+            currentDepartmentPage++;
+            department_current_page.setText(String.valueOf(currentDepartmentPage));
+            try {
+                populateDepartmentTable();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     @FXML
     protected void prevEmployee() {
-        currentEmployeePage--;
-        try {
-            if (currentEmployeePage > 0) {
-                populateEmployeeTable();
-            } else {
-                currentEmployeePage = 1;
+        if (currentEmployeePage > 1) {
+            currentEmployeePage--;
+            employee_current_page.setText(String.valueOf(currentEmployeePage));
+            try {
+                if (currentEmployeePage > 0) {
+                    populateEmployeeTable();
+                } else {
+                    currentEmployeePage = 1;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
     @FXML
     protected void nextEmployee() {
-        currentEmployeePage++;
-        try {
-            populateEmployeeTable();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (currentEmployeePage < (totalEmployeePageSize / 10 + 1)) {
+            currentEmployeePage++;
+            employee_current_page.setText(String.valueOf(currentEmployeePage));
+            try {
+                populateEmployeeTable();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -331,7 +399,7 @@ public class EmployeeController {
         }
     }
 
-    private void openEditModal(EmployeeDisplay employeeDisplay) {
+    private void openEmployeeEditModal(EmployeeDisplay employeeDisplay) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("edit_employee.fxml"));
             Parent root = loader.load();
@@ -340,6 +408,26 @@ public class EmployeeController {
 
             editEmployeeController.initEmployee(employeeDisplay);
             editEmployeeController.initInput();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openDepartmentEditModal(DepartmentDisplay departmentDisplay) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("edit_department.fxml"));
+            Parent root = loader.load();
+
+            EditDepartmentsController editDepartmentController = loader.getController();
+
+            editDepartmentController.initDepartment(departmentDisplay);
+            editDepartmentController.initInput();
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));

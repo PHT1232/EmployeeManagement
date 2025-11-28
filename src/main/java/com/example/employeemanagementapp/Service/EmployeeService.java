@@ -32,6 +32,14 @@ public class EmployeeService {
         return paginationService.fetchData(numOfRows, page);
     }
 
+    public List<Employee> fetchPaginationWithDifferentId(int numOfRow, int offset, int[] employeesId) {
+        try {
+            return employeeReposistory.fetchPaginationWithDifferentId(numOfRow, offset, employeesId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<EmployeeDisplay> fetchDisplayList(int numOfRows, int page) throws Exception {
         List<Employee> list = paginationService.fetchData(numOfRows, page);
         List<EmployeeDisplay> displayList = new ArrayList<>();

@@ -199,11 +199,6 @@
                               </VBox>
                               <HBox alignment="CENTER" prefHeight="44.0" prefWidth="1410.0">
                                  <children>
-                                    <Button mnemonicParsing="false" styleClass="button-regular" text="First">
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
-                                    </Button>
                                     <Button fx:id="first_prev_button" mnemonicParsing="false" onAction="#prev" styleClass="button-regular" text="Prev">
                                        <HBox.margin>
                                           <Insets left="15.0" right="10.0" />
@@ -219,7 +214,6 @@
                                           <Insets left="10.0" right="15.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button mnemonicParsing="false" styleClass="button-regular" text="Last" />
                                  </children>
                                  <VBox.margin>
                                     <Insets bottom="10.0" />
